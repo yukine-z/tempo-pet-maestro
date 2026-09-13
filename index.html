@@ -44,24 +44,13 @@
   .pet.bop{animation:bop .54s ease}
   @keyframes bop{50%{transform:translateY(-8px) rotate(-2deg)}}
 
-  .paw{position:absolute;top:96px;width:44px;height:44px;border:4px solid #3d4948;background:#fff4d7;border-radius:45% 45% 50% 50%;display:grid;place-items:center;font-size:20px;opacity:0;transform-origin:center}
-  .paw.l{left:8px}
-  .paw.r{right:8px}
-  .pet-stage.clap-on.music .paw{opacity:1}
-  .pet-stage.clap-on.music .paw.l{animation:clapLeft .7s infinite ease-in-out}
-  .pet-stage.clap-on.music .paw.r{animation:clapRight .7s infinite ease-in-out}
-  @keyframes clapLeft{
-    0%,100%{transform:translateX(0) rotate(-18deg)}
-    50%{transform:translateX(28px) rotate(2deg)}
-  }
-  @keyframes clapRight{
-    0%,100%{transform:translateX(0) rotate(18deg)}
-    50%{transform:translateX(-28px) rotate(-2deg)}
-  }
-
-  .applause{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:0;opacity:0;transition:.2s ease}
-  .pet-stage.clap-on.music .applause{opacity:1;font-size:20px;animation:spark 1s infinite ease-in-out}
-  @keyframes spark{50%{transform:translateY(-3px)}}
+  .metro-panel{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#faf9f6}
+  .metro-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .metro-row label{font-weight:700}
+  .metro-row input[type=range]{flex:1;min-width:150px}
+  .bpm{min-width:72px;text-align:center;font-weight:750}
+  .pulse-dot{width:14px;height:14px;border-radius:50%;background:#bbb;transition:transform .08s ease,background .08s ease}
+  .pulse-dot.on{transform:scale(1.45);background:var(--accent)}
 
   .bubble{position:absolute;top:8px;right:8px;max-width:200px;background:white;border:1px solid var(--line);padding:9px 11px;border-radius:14px;font-size:.88rem;box-shadow:0 3px 10px #0000000d}
   .progress{height:15px;background:#ece8e0;border-radius:999px;overflow:hidden;margin:10px 0 6px}
@@ -105,8 +94,6 @@
     <div id="petStage" class="card pet-stage">
       <div id="bubble" class="bubble">Ready when you are 🎹</div>
       <div class="pet-wrap">
-        <div id="pawL" class="paw l">👏</div>
-        <div id="pawR" class="paw r">👏</div>
         <div id="pet" class="pet" aria-label="Your evolving practice pet">
           <div class="ear l"></div><div class="ear r"></div>
           <div class="tail"></div>
@@ -117,7 +104,6 @@
           <div class="wings"><span>◖</span><span>◗</span></div>
         </div>
       </div>
-      <div class="applause">clap • clap • clap</div>
     </div>
 
     <div class="card">
@@ -137,7 +123,17 @@
       <div class="controls">
         <button id="startBtn" class="primary">🎤 Start practice</button>
         <button id="pauseBtn" class="secondary" disabled>Pause</button>
-        <button id="clapBtn" class="secondary toggle">👏 Pet clap: On</button>
+        <button id="metroBtn" class="secondary toggle">⏱ Metronome: Off</button>
+      </div>
+
+      <div class="metro-panel">
+        <div class="metro-row">
+          <label for="bpmSlider">Metronome speed</label>
+          <input id="bpmSlider" type="range" min="40" max="208" value="80" step="1">
+          <span id="bpmText" class="bpm">80 BPM</span>
+          <span id="pulseDot" class="pulse-dot" aria-hidden="true"></span>
+        </div>
+        <p class="note">Turn the metronome on when you want a steady beat. It makes a simple click and does not animate the pet.</p>
       </div>
 
       <div class="meter">
@@ -186,7 +182,8 @@
     lastCompletedDay: "",
     evolutions: 0,
     evolutionSeeds: [],
-    clapMode: true,
+    metronomeOn: false,
+    metronomeBpm: 80,
     diary: ["Your Tempo Pet hatched. Play music to help it grow!"]
   };
 
@@ -278,9 +275,10 @@
     $("m20").classList.toggle("done",state.today>=1200);
     $("m30").classList.toggle("done",state.today>=1800);
     $("log").innerHTML=state.diary.map(x=>`<div>${escapeHTML(x)}</div>`).join("");
-    $("clapBtn").textContent = state.clapMode ? "👏 Pet clap: On" : "👏 Pet clap: Off";
-    $("clapBtn").classList.toggle("active", state.clapMode);
-    $("petStage").classList.toggle("clap-on", state.clapMode);
+    $("metroBtn").textContent = state.metronomeOn ? "⏱ Metronome: On" : "⏱ Metronome: Off";
+    $("metroBtn").classList.toggle("active", state.metronomeOn);
+    $("bpmSlider").value = state.metronomeBpm || 80;
+    $("bpmText").textContent = `${state.metronomeBpm || 80} BPM`;
     stylePet();
   }
 
@@ -322,10 +320,42 @@
     $("petStage").classList.toggle("music", on);
   }
 
-  $("clapBtn").addEventListener("click", () => {
-    state.clapMode = !state.clapMode;
+  let metroTimer=null, metroAudio=null;
+  function clickBeat(){
+    if(!state.metronomeOn) return;
+    if(!metroAudio) metroAudio = new (window.AudioContext||window.webkitAudioContext)();
+    const osc=metroAudio.createOscillator();
+    const gain=metroAudio.createGain();
+    osc.frequency.value=900;
+    gain.gain.setValueAtTime(0.0001, metroAudio.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.12, metroAudio.currentTime+0.003);
+    gain.gain.exponentialRampToValueAtTime(0.0001, metroAudio.currentTime+0.045);
+    osc.connect(gain); gain.connect(metroAudio.destination);
+    osc.start(); osc.stop(metroAudio.currentTime+0.05);
+    const dot=$("pulseDot"); dot.classList.add("on"); setTimeout(()=>dot.classList.remove("on"),90);
+  }
+  function stopMetronome(){
+    if(metroTimer){ clearInterval(metroTimer); metroTimer=null; }
+    $("pulseDot").classList.remove("on");
+  }
+  function startMetronome(){
+    stopMetronome();
+    if(!state.metronomeOn) return;
+    const bpm=Math.max(40,Math.min(208,Number(state.metronomeBpm)||80));
+    clickBeat();
+    metroTimer=setInterval(clickBeat, 60000/bpm);
+  }
+  $("metroBtn").addEventListener("click", async () => {
+    state.metronomeOn = !state.metronomeOn;
+    if(state.metronomeOn && !metroAudio) metroAudio = new (window.AudioContext||window.webkitAudioContext)();
+    if(metroAudio && metroAudio.state === "suspended") await metroAudio.resume().catch(()=>{});
+    save(); render(); startMetronome();
+  });
+  $("bpmSlider").addEventListener("input", () => {
+    state.metronomeBpm = Number($("bpmSlider").value);
+    $("bpmText").textContent = `${state.metronomeBpm} BPM`;
     save();
-    render();
+    if(state.metronomeOn) startMetronome();
   });
 
   let ctx=null, analyser=null, src=null, stream=null, raf=0, active=false;
