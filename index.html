@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#6a5acd">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<title>Tempo Pet — Piano Practice Companion</title>
+<style>
+  :root{
+    --bg:#f7f5f1; --card:#ffffff; --ink:#242424; --muted:#6e6a63;
+    --line:#ded9d0; --accent:#6a5acd; --good:#2b7a4b; --soft:#efedf9;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+  main{max-width:720px;margin:0 auto;padding:18px}
+  .hero{display:grid;grid-template-columns:220px 1fr;gap:18px;align-items:center}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px}
+  h1{font-size:1.65rem;margin:0 0 4px}
+  h2{font-size:1.05rem;margin:0 0 10px}
+  p{margin:6px 0;color:var(--muted)}
+  .pet-stage{min-height:220px;display:grid;place-items:center;position:relative;overflow:hidden}
+  .pet{--body:#8ed1c4;--belly:#daf4ef;--ear:#78b9ad;--size:112px;position:relative;width:var(--size);height:calc(var(--size)*.92);transition:.5s ease}
+  .body{position:absolute;inset:20% 5% 0;border-radius:48% 48% 42% 42%;background:var(--body);border:4px solid #3d4948}
+  .belly{position:absolute;width:54%;height:45%;left:23%;top:43%;border-radius:50%;background:var(--belly)}
+  .ear{position:absolute;width:34%;height:40%;top:2%;background:var(--ear);border:4px solid #3d4948;z-index:-1}
+  .ear.l{left:8%;border-radius:90% 10% 70% 20%;transform:rotate(-22deg)}
+  .ear.r{right:8%;border-radius:10% 90% 20% 70%;transform:rotate(22deg)}
+  .eye{position:absolute;width:11%;height:12%;top:38%;border-radius:50%;background:#28302f}
+  .eye.l{left:28%}.eye.r{right:28%}
+  .shine{width:35%;height:35%;border-radius:50%;background:white;margin:14%}
+  .mouth{position:absolute;left:43%;top:54%;width:14%;height:8%;border-bottom:3px solid #28302f;border-radius:50%}
+  .tail{position:absolute;width:42%;height:25%;right:-29%;top:57%;border:4px solid #3d4948;border-left:none;border-radius:0 80% 80% 0;background:var(--body);z-index:-2;transform:rotate(var(--tailrot,8deg))}
+  .mark{position:absolute;inset:29% 14% auto auto;font-size:var(--marksize,0px);transform:rotate(-10deg)}
+  .crown{position:absolute;left:36%;top:-12%;font-size:var(--crownsize,0px)}
+  .wings{position:absolute;left:-24%;right:-24%;top:42%;display:flex;justify-content:space-between;font-size:var(--wingsize,0px);z-index:-1}
+  .pet.bop{animation:bop .52s ease}
+  @keyframes bop{50%{transform:translateY(-8px) rotate(-2deg)}}
+  .bubble{position:absolute;top:8px;right:8px;max-width:190px;background:white;border:1px solid var(--line);padding:9px 11px;border-radius:14px;font-size:.88rem;box-shadow:0 3px 10px #0000000d}
+  .progress{height:15px;background:#ece8e0;border-radius:999px;overflow:hidden;margin:10px 0 6px}
+  .bar{height:100%;width:0;background:var(--accent);transition:width .35s}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+  .stat{background:#f7f6f3;border-radius:14px;padding:10px;text-align:center}
+  .big{font-weight:750;font-size:1.18rem}
+  .small{font-size:.78rem;color:var(--muted)}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  button{border:0;border-radius:13px;padding:12px 15px;font:inherit;font-weight:700;cursor:pointer;min-height:46px}
+  button.primary{background:var(--accent);color:white}
+  button.secondary{background:#ece9e2;color:var(--ink)}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .meter{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin-top:14px}
+  .signal{height:10px;border-radius:999px;background:#ece8e0;overflow:hidden}
+  .signal>div{height:100%;width:0;background:#7b7974;transition:width .12s}
+  .music-ok{color:var(--good);font-weight:700}
+  .note{font-size:.84rem;color:var(--muted)}
+  .milestones{display:flex;gap:8px;margin-top:12px}
+  .milestone{flex:1;border:1px dashed var(--line);border-radius:13px;padding:9px;text-align:center;font-size:.82rem}
+  .milestone.done{background:#edf7f0;border-style:solid;border-color:#b9ddc5}
+  .log{max-height:150px;overflow:auto;font-size:.86rem;margin-top:8px}
+  .log div{padding:6px 0;border-bottom:1px solid #eeeae3}
+  details{margin-top:14px}
+  summary{cursor:pointer;color:var(--muted)}
+  .badge{display:inline-block;background:var(--soft);border-radius:999px;padding:4px 9px;font-size:.78rem;font-weight:700}
+  @media(max-width:600px){.hero{grid-template-columns:1fr}.pet-stage{min-height:240px}.bubble{right:2px}.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div class="card pet-stage">
+      <div id="bubble" class="bubble">Ready when you are 🎹</div>
+      <div id="pet" class="pet" aria-label="Your evolving practice pet">
+        <div class="ear l"></div><div class="ear r"></div>
+        <div class="tail"></div>
+        <div class="body"></div><div class="belly"></div>
+        <div class="eye l"><div class="shine"></div></div><div class="eye r"><div class="shine"></div></div>
+        <div class="mouth"></div><div class="mark">♪</div><div class="crown">♛</div>
+        <div class="wings"><span>◖</span><span>◗</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="badge">30-minute daily quest</span>
+      <h1>Tempo Pet</h1>
+      <p>Your pet grows only while it hears music-like piano playing — not just room noise.</p>
+
+      <div class="progress" aria-label="Daily practice progress"><div id="bar" class="bar"></div></div>
+      <div><strong id="timeText">0:00</strong> / 30:00 today</div>
+
+      <div class="milestones">
+        <div id="m10" class="milestone">10 min<br>mystery evolution</div>
+        <div id="m20" class="milestone">20 min<br>mystery evolution</div>
+        <div id="m30" class="milestone">30 min<br>daily treasure</div>
+      </div>
+
+      <div class="controls">
+        <button id="startBtn" class="primary">🎤 Start practice</button>
+        <button id="pauseBtn" class="secondary" disabled>Pause</button>
+      </div>
+
+      <div class="meter">
+        <div class="signal"><div id="signalBar"></div></div>
+        <span id="listenState" class="note">Mic off</span>
+      </div>
+      <p id="musicReason" class="note">Practice time starts after a few seconds of consistent musical tones.</p>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:16px">
+    <div class="stats">
+      <div class="stat"><div id="streak" class="big">0</div><div class="small">day streak</div></div>
+      <div class="stat"><div id="evolutions" class="big">0</div><div class="small">evolutions</div></div>
+      <div class="stat"><div id="totalTime" class="big">0m</div><div class="small">all-time music</div></div>
+    </div>
+    <h2 style="margin-top:16px">Pet diary</h2>
+    <div id="log" class="log" aria-live="polite"></div>
+    <details>
+      <summary>How music detection works</summary>
+      <p class="note">The game looks for sustained pitched sound, clear frequency peaks, changing notes, and a piano-like tonal spectrum. Speech, claps, fans, and random bumps should usually fail the test. It deliberately waits for musical evidence before adding time.</p>
+      <p class="note">No audio is uploaded or recorded. Analysis happens in your browser.</p>
+    </details>
+  </section>
+</main>
+
+<script>
+(() => {
+  "use strict";
+  const KEY = "tempoPetStateV1";
+  const DAY_GOAL = 30*60;
+  const roots = document;
+  const $ = id => roots.getElementById(id);
+
+  function localDateKey(d=new Date()){
+    const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${day}`;
+  }
+  const defaults = {
+    day: localDateKey(), today:0, total:0, streak:0, lastCompletedDay:"",
+    evolutions:0, evolutionSeeds:[], diary:["Your Tempo Pet hatched. Play music to help it grow!"]
+  };
+  function readCookie(name){
+    return document.cookie.split("; ").find(x=>x.startsWith(name+"="))?.split("=")[1] || "";
+  }
+  function loadState(){
+    let x=null;
+    try{x=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
+    if(!x){
+      try{x=JSON.parse(decodeURIComponent(readCookie(KEY))||"null")}catch(e){}
+    }
+    return Object.assign({}, defaults, x||{});
+  }
+  let state = loadState();
+
+  function save(){
+    try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+    try{ document.cookie = KEY+"="+encodeURIComponent(JSON.stringify(state))+"; max-age=31536000; SameSite=Lax; path=/"; }catch(e){}
+  }
+  function dateDiffDays(a,b){
+    if(!a||!b) return 999;
+    const [ay,am,ad]=a.split("-").map(Number), [by,bm,bd]=b.split("-").map(Number);
+    return Math.round((Date.UTC(by,bm-1,bd)-Date.UTC(ay,am-1,ad))/86400000);
+  }
+  function rollover(){
+    const now=localDateKey();
+    if(state.day!==now){
+      state.day=now; state.today=0;
+      state.diary.unshift("A new practice day begins.");
+      state.diary=state.diary.slice(0,16);
+      save();
+    }
+  }
+  rollover();
+
+  function fmt(s){
+    s=Math.max(0,Math.floor(s));
+    return `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+  }
+  function seeded(seed){
+    let x=(seed*9301+49297)%233280;
+    return x/233280;
+  }
+  const palettes=[
+    ["#8ed1c4","#daf4ef","#78b9ad"],
+    ["#d9a5c9","#f5ddeb","#bf8fb0"],
+    ["#e5ba75","#fae8c6","#d6a45c"],
+    ["#9bb8e8","#dde8fb","#7e9cd0"],
+    ["#b6d98b","#e5f3cf","#96be69"]
+  ];
+  function stylePet(){
+    const p=$("pet");
+    const count=state.evolutionSeeds.length;
+    const seed=state.evolutionSeeds.reduce((a,b)=>a+b,17);
+    const pal=palettes[Math.floor(seeded(seed+3)*palettes.length)];
+    p.style.setProperty("--body",pal[0]); p.style.setProperty("--belly",pal[1]); p.style.setProperty("--ear",pal[2]);
+    p.style.setProperty("--size",(112+Math.min(34,count*4))+"px");
+    p.style.setProperty("--tailrot",(-8+seeded(seed+8)*32)+"deg");
+    p.style.setProperty("--marksize", count>=1 ? (17+Math.min(12,count))+"px":"0px");
+    p.style.setProperty("--crownsize", count>=4 ? "25px":"0px");
+    p.style.setProperty("--wingsize", count>=7 ? "31px":"0px");
+    if(count>=2) p.querySelector(".body").style.borderRadius = `${38+Math.floor(seeded(seed+12)*22)}% ${45+Math.floor(seeded(seed+15)*18)}% 42% 42%`;
+  }
+  function render(){
+    rollover();
+    $("timeText").textContent=fmt(state.today);
+    $("bar").style.width=Math.min(100,state.today/DAY_GOAL*100)+"%";
+    $("streak").textContent=state.streak;
+    $("evolutions").textContent=state.evolutions;
+    $("totalTime").textContent=Math.floor(state.total/60)+"m";
+    $("m10").classList.toggle("done",state.today>=600);
+    $("m20").classList.toggle("done",state.today>=1200);
+    $("m30").classList.toggle("done",state.today>=1800);
+    $("log").innerHTML=state.diary.map(x=>`<div>${escapeHTML(x)}</div>`).join("");
+    stylePet();
+  }
+  function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+  function evolve(label){
+    const seed=Math.floor(Math.random()*1000000);
+    state.evolutionSeeds.push(seed); state.evolutions++;
+    const surprises=[
+      "Its ears shifted shape.","A musical marking appeared.","Its colours changed a little.",
+      "Its tail changed its bounce.","Its body grew a tiny bit.","It developed a curious new expression."
+    ];
+    const surprise=surprises[Math.floor(Math.random()*surprises.length)];
+    state.diary.unshift(`${label}: ${surprise}`);
+    state.diary=state.diary.slice(0,16);
+    $("bubble").textContent=["Whoa—new look! ✨","I grew! Keep playing!","That sounded magical 🎵","Mystery evolution unlocked!"][Math.floor(Math.random()*4)];
+    $("pet").classList.remove("bop"); void $("pet").offsetWidth; $("pet").classList.add("bop");
+    save(); render();
+  }
+  function completeDay(){
+    const today=localDateKey();
+    if(state.lastCompletedDay===today) return;
+    const gap=dateDiffDays(state.lastCompletedDay,today);
+    state.streak = gap===1 ? state.streak+1 : 1;
+    state.lastCompletedDay=today;
+    state.diary.unshift("🏆 30-minute quest complete! Your pet found a daily treasure.");
+    state.diary=state.diary.slice(0,16);
+    save();
+  }
+  function checkMilestones(before,after){
+    if(before<600 && after>=600) evolve("10-minute evolution");
+    if(before<1200 && after>=1200) evolve("20-minute evolution");
+    if(before<1800 && after>=1800){ evolve("30-minute evolution"); completeDay(); }
+  }
+
+  let ctx=null, analyser=null, src=null, stream=null, raf=0, active=false;
+  let freq=null, time=null, lastTick=0, musicalConfidence=0, noteHistory=[];
+  let earnedBuffer=0, lastUi=0;
+
+  function spectralFeatures(){
+    analyser.getByteFrequencyData(freq);
+    analyser.getByteTimeDomainData(time);
+
+    let rms=0;
+    for(let i=0;i<time.length;i++){ const v=(time[i]-128)/128; rms+=v*v; }
+    rms=Math.sqrt(rms/time.length);
+
+    const binHz=ctx.sampleRate/analyser.fftSize;
+    let total=0, peak=0, peakBin=0, weighted=0, high=0;
+    const minBin=Math.max(1,Math.floor(55/binHz));
+    const maxBin=Math.min(freq.length-1,Math.ceil(4200/binHz));
+    for(let i=minBin;i<=maxBin;i++){
+      const a=freq[i]/255; const e=a*a;
+      total+=e; weighted+=e*i;
+      if(e>peak){peak=e;peakBin=i;}
+      if(i*binHz>2500) high+=e;
+    }
+    const centroid=total ? (weighted/total)*binHz : 0;
+    const highRatio=total ? high/total : 1;
+
+    // Spectral peak prominence around likely piano partials.
+    let neighborhood=0, n=0;
+    for(let j=Math.max(minBin,peakBin-5);j<=Math.min(maxBin,peakBin+5);j++){
+      if(Math.abs(j-peakBin)>1){neighborhood+=(freq[j]/255)**2;n++;}
+    }
+    const prominence=peak/(neighborhood/Math.max(1,n)+1e-5);
+
+    // Autocorrelation pitch-strength on downsampled time waveform.
+    const sr=ctx.sampleRate, minLag=Math.floor(sr/1200), maxLag=Math.min(Math.floor(sr/55),time.length-2);
+    let best=0,bestLag=0, energy=0;
+    for(let i=0;i<time.length;i++){let v=(time[i]-128)/128;energy+=v*v}
+    if(energy>0.001){
+      for(let lag=minLag;lag<=maxLag;lag+=2){
+        let sum=0, e1=0, e2=0;
+        for(let i=0;i<time.length-lag;i+=2){
+          const a=(time[i]-128)/128,b=(time[i+lag]-128)/128;
+          sum+=a*b;e1+=a*a;e2+=b*b;
+        }
+        const corr=sum/Math.sqrt(e1*e2+1e-9);
+        if(corr>best){best=corr;bestLag=lag}
+      }
+    }
+    const pitch=bestLag?sr/bestLag:0;
+    return {rms,peak,prominence,centroid,highRatio,pitch,pitchStrength:best};
+  }
+
+  function classify(f){
+    // Conservative music-like heuristic: enough level + tonal/autocorrelated + spectrum not dominated by hiss.
+    const loud=f.rms>0.018;
+    const tonal=(f.pitchStrength>0.34 || f.prominence>3.0);
+    const plausiblePitch=f.pitch>50 && f.pitch<1600;
+    const notHissy=f.highRatio<0.58 && f.centroid<3300;
+    if(loud && tonal && plausiblePitch && notHissy){
+      noteHistory.push(f.pitch); if(noteHistory.length>18) noteHistory.shift();
+      // Playing can repeat one note, so variation is a bonus, not mandatory.
+      let variation=0;
+      if(noteHistory.length>=4){
+        const lo=Math.min(...noteHistory), hi=Math.max(...noteHistory);
+        variation=Math.log2(Math.max(hi,1)/Math.max(lo,1))*12;
+      }
+      return 0.72 + Math.min(.28,variation/18);
+    }
+    return 0;
+  }
+
+  function loop(ts){
+    if(!active)return;
+    const dt=Math.min(0.25,(ts-lastTick)/1000||0); lastTick=ts;
+    const f=spectralFeatures(), score=classify(f);
+    musicalConfidence += score>0 ? dt*1.35 : -dt*1.8;
+    musicalConfidence=Math.max(0,Math.min(3,musicalConfidence));
+    const music=musicalConfidence>0.85;
+
+    $("signalBar").style.width=Math.min(100,f.rms*850)+"%";
+    $("listenState").textContent=music?"Music detected ✓":"Listening…";
+    $("listenState").className=music?"music-ok":"note";
+    $("musicReason").textContent=music
+      ? `Counting practice • tonal signal around ${Math.round(f.pitch||0)} Hz`
+      : (f.rms<0.018 ? "Waiting for your piano…" : "Sound heard, checking whether it is musical…");
+
+    if(music){
+      earnedBuffer+=dt;
+      if(earnedBuffer>=0.5){
+        const add=earnedBuffer;earnedBuffer=0;
+        const before=state.today;
+        state.today+=add; state.total+=add;
+        checkMilestones(before,state.today);
+        if(ts-lastUi>450){save();render();lastUi=ts}
+        $("pet").classList.toggle("bop",Math.floor(ts/520)%2===0);
+        if(Math.random()<0.007){
+          const sayings=["Nice! I’m listening 🎶","Keep the melody going!","That feeds my music power!","You’re building my next evolution…"];
+          $("bubble").textContent=sayings[Math.floor(Math.random()*sayings.length)];
+        }
+      }
+    } else {
+      earnedBuffer=0;
+      $("pet").classList.remove("bop");
+    }
+    raf=requestAnimationFrame(loop);
+  }
+
+  async function start(){
+    if(active)return;
+    try{
+      stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+      ctx=new (window.AudioContext||window.webkitAudioContext)();
+      await ctx.resume();
+      analyser=ctx.createAnalyser(); analyser.fftSize=2048; analyser.smoothingTimeConstant=.55;
+      src=ctx.createMediaStreamSource(stream); src.connect(analyser);
+      freq=new Uint8Array(analyser.frequencyBinCount); time=new Uint8Array(analyser.fftSize);
+      active=true; musicalConfidence=0; noteHistory=[]; lastTick=performance.now();
+      $("startBtn").disabled=true;$("pauseBtn").disabled=false;
+      $("bubble").textContent="Play me something! 🎹";
+      raf=requestAnimationFrame(loop);
+    }catch(err){
+      let msg = "Microphone access failed.";
+      const isFile = location.protocol === "file:";
+      const insecure = !window.isSecureContext;
+      if (isFile || insecure) {
+        msg = "This page was opened as a local file, so the browser is blocking microphone access. Launch Tempo Pet through localhost using the starter included with the game.";
+      } else if (err && err.name === "NotAllowedError") {
+        msg = "Microphone permission was blocked. Click the lock/site icon near the address bar, allow Microphone, then press Start practice again.";
+      } else if (err && err.name === "NotFoundError") {
+        msg = "No microphone was found. Check that your device microphone is connected and enabled.";
+      } else if (err && err.name === "NotReadableError") {
+        msg = "Your microphone is busy or unavailable to the browser. Close other apps using it, then try again.";
+      } else if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        msg = "This browser does not expose microphone access here. Open Tempo Pet through localhost in Chrome, Edge, or Safari.";
+      } else if (err && err.message) {
+        msg = "Microphone error: " + err.message;
+      }
+      $("musicReason").textContent=msg;
+      $("listenState").textContent="Mic unavailable";
+    }
+  }
+  function pause(){
+    active=false; cancelAnimationFrame(raf);
+    if(stream)stream.getTracks().forEach(t=>t.stop());
+    if(ctx)ctx.close().catch(()=>{});
+    stream=null;ctx=null;
+    $("startBtn").disabled=false;$("pauseBtn").disabled=true;
+    $("listenState").textContent="Paused";$("listenState").className="note";
+    $("signalBar").style.width="0";
+    $("musicReason").textContent="Your progress is saved. Start again whenever you’re ready.";
+    $("bubble").textContent="I’ll keep your progress safe 🌙";
+    save();render();
+  }
+  if (location.protocol === "file:" || !window.isSecureContext) {
+    $("musicReason").textContent = "Microphone needs the localhost launcher. If you opened this HTML by double-clicking it, close it and use Start Tempo Pet instead.";
+    $("listenState").textContent = "Needs localhost";
+  }
+  $("startBtn").addEventListener("click",start);
+  $("pauseBtn").addEventListener("click",pause);
+  window.addEventListener("pagehide",save);
+  setInterval(()=>{if(active)save()},5000);
+  render();
+})();
+</script>
+
+<script>
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+</script>
+
+</body>
+</html>
