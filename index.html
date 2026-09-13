@@ -129,11 +129,11 @@
       <div class="metro-panel">
         <div class="metro-row">
           <label for="bpmSlider">Metronome speed</label>
-          <input id="bpmSlider" type="range" min="50" max="120" value="80" step="1">
+          <input id="bpmSlider" type="range" min="30" max="120" value="80" step="1">
           <span id="bpmText" class="bpm">80 BPM</span>
           <span id="pulseDot" class="pulse-dot" aria-hidden="true"></span>
         </div>
-        <p class="note">Turn the metronome on when you want a steady beat. The beginner range is 50–120 BPM, and it does not animate the pet.</p>
+        <p class="note">Turn the metronome on when you want a steady beat. The beginner range is 30–120 BPM, and it does not animate the pet.</p>
       </div>
 
       <div class="meter">
@@ -341,7 +341,7 @@
   function startMetronome(){
     stopMetronome();
     if(!state.metronomeOn) return;
-    const bpm=Math.max(50,Math.min(120,Number(state.metronomeBpm)||80));
+    const bpm=Math.max(30,Math.min(120,Number(state.metronomeBpm)||80));
     clickBeat();
     metroTimer=setInterval(clickBeat, 60000/bpm);
   }
