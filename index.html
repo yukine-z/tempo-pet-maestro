@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
-<title>Tempo Pet — Piano Practice Companion</title>
+<title>Tempo Pet Maestro</title>
 <style>
   :root{
     --bg:#f7f5f1; --card:#ffffff; --ink:#242424; --muted:#6e6a63;
@@ -15,14 +15,15 @@
   }
   *{box-sizing:border-box}
   body{margin:0;font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
-  main{max-width:720px;margin:0 auto;padding:18px}
-  .hero{display:grid;grid-template-columns:220px 1fr;gap:18px;align-items:center}
+  main{max-width:760px;margin:0 auto;padding:18px}
+  .hero{display:grid;grid-template-columns:240px 1fr;gap:18px;align-items:center}
   .card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px}
-  h1{font-size:1.65rem;margin:0 0 4px}
+  h1{font-size:1.7rem;margin:0 0 4px}
   h2{font-size:1.05rem;margin:0 0 10px}
   p{margin:6px 0;color:var(--muted)}
-  .pet-stage{min-height:220px;display:grid;place-items:center;position:relative;overflow:hidden}
-  .pet{--body:#8ed1c4;--belly:#daf4ef;--ear:#78b9ad;--size:112px;position:relative;width:var(--size);height:calc(var(--size)*.92);transition:.5s ease}
+  .pet-stage{min-height:245px;display:grid;place-items:center;position:relative;overflow:hidden}
+  .pet-wrap{position:relative;width:190px;height:190px;display:grid;place-items:center}
+  .pet{--body:#8ed1c4;--belly:#daf4ef;--ear:#78b9ad;--size:112px;position:relative;width:var(--size);height:calc(var(--size)*.92);transition:.35s ease}
   .body{position:absolute;inset:20% 5% 0;border-radius:48% 48% 42% 42%;background:var(--body);border:4px solid #3d4948}
   .belly{position:absolute;width:54%;height:45%;left:23%;top:43%;border-radius:50%;background:var(--belly)}
   .ear{position:absolute;width:34%;height:40%;top:2%;background:var(--ear);border:4px solid #3d4948;z-index:-1}
@@ -31,14 +32,38 @@
   .eye{position:absolute;width:11%;height:12%;top:38%;border-radius:50%;background:#28302f}
   .eye.l{left:28%}.eye.r{right:28%}
   .shine{width:35%;height:35%;border-radius:50%;background:white;margin:14%}
-  .mouth{position:absolute;left:43%;top:54%;width:14%;height:8%;border-bottom:3px solid #28302f;border-radius:50%}
+  .mouth{position:absolute;left:42%;top:55%;width:16%;height:7%;border-bottom:3px solid #28302f;border-radius:0 0 60% 60%;transition:.2s ease}
+  .pet.happy .mouth{top:52%;height:12%;border-bottom-width:4px;border-radius:0 0 100% 100%}
+  .cheek{position:absolute;width:10%;height:7%;top:50%;background:#f6a4b8;border-radius:50%;opacity:0;transition:.2s ease}
+  .cheek.l{left:19%}.cheek.r{right:19%}
+  .pet.happy .cheek{opacity:.55}
   .tail{position:absolute;width:42%;height:25%;right:-29%;top:57%;border:4px solid #3d4948;border-left:none;border-radius:0 80% 80% 0;background:var(--body);z-index:-2;transform:rotate(var(--tailrot,8deg))}
   .mark{position:absolute;inset:29% 14% auto auto;font-size:var(--marksize,0px);transform:rotate(-10deg)}
   .crown{position:absolute;left:36%;top:-12%;font-size:var(--crownsize,0px)}
   .wings{position:absolute;left:-24%;right:-24%;top:42%;display:flex;justify-content:space-between;font-size:var(--wingsize,0px);z-index:-1}
-  .pet.bop{animation:bop .52s ease}
+  .pet.bop{animation:bop .54s ease}
   @keyframes bop{50%{transform:translateY(-8px) rotate(-2deg)}}
-  .bubble{position:absolute;top:8px;right:8px;max-width:190px;background:white;border:1px solid var(--line);padding:9px 11px;border-radius:14px;font-size:.88rem;box-shadow:0 3px 10px #0000000d}
+
+  .paw{position:absolute;top:96px;width:44px;height:44px;border:4px solid #3d4948;background:#fff4d7;border-radius:45% 45% 50% 50%;display:grid;place-items:center;font-size:20px;opacity:0;transform-origin:center}
+  .paw.l{left:8px}
+  .paw.r{right:8px}
+  .pet-stage.clap-on.music .paw{opacity:1}
+  .pet-stage.clap-on.music .paw.l{animation:clapLeft .7s infinite ease-in-out}
+  .pet-stage.clap-on.music .paw.r{animation:clapRight .7s infinite ease-in-out}
+  @keyframes clapLeft{
+    0%,100%{transform:translateX(0) rotate(-18deg)}
+    50%{transform:translateX(28px) rotate(2deg)}
+  }
+  @keyframes clapRight{
+    0%,100%{transform:translateX(0) rotate(18deg)}
+    50%{transform:translateX(-28px) rotate(-2deg)}
+  }
+
+  .applause{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:0;opacity:0;transition:.2s ease}
+  .pet-stage.clap-on.music .applause{opacity:1;font-size:20px;animation:spark 1s infinite ease-in-out}
+  @keyframes spark{50%{transform:translateY(-3px)}}
+
+  .bubble{position:absolute;top:8px;right:8px;max-width:200px;background:white;border:1px solid var(--line);padding:9px 11px;border-radius:14px;font-size:.88rem;box-shadow:0 3px 10px #0000000d}
   .progress{height:15px;background:#ece8e0;border-radius:999px;overflow:hidden;margin:10px 0 6px}
   .bar{height:100%;width:0;background:var(--accent);transition:width .35s}
   .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
@@ -49,42 +74,55 @@
   button{border:0;border-radius:13px;padding:12px 15px;font:inherit;font-weight:700;cursor:pointer;min-height:46px}
   button.primary{background:var(--accent);color:white}
   button.secondary{background:#ece9e2;color:var(--ink)}
+  button.toggle.active{background:#fff1c8}
   button:disabled{opacity:.5;cursor:not-allowed}
   .meter{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin-top:14px}
   .signal{height:10px;border-radius:999px;background:#ece8e0;overflow:hidden}
-  .signal>div{height:100%;width:0;background:#7b7974;transition:width .12s}
+  .signal>div{height:100%;width:0;background:#7b7974;transition:width .16s}
   .music-ok{color:var(--good);font-weight:700}
   .note{font-size:.84rem;color:var(--muted)}
   .milestones{display:flex;gap:8px;margin-top:12px}
   .milestone{flex:1;border:1px dashed var(--line);border-radius:13px;padding:9px;text-align:center;font-size:.82rem}
   .milestone.done{background:#edf7f0;border-style:solid;border-color:#b9ddc5}
-  .log{max-height:150px;overflow:auto;font-size:.86rem;margin-top:8px}
+  .log{max-height:160px;overflow:auto;font-size:.86rem;margin-top:8px}
   .log div{padding:6px 0;border-bottom:1px solid #eeeae3}
   details{margin-top:14px}
   summary{cursor:pointer;color:var(--muted)}
   .badge{display:inline-block;background:var(--soft);border-radius:999px;padding:4px 9px;font-size:.78rem;font-weight:700}
-  @media(max-width:600px){.hero{grid-template-columns:1fr}.pet-stage{min-height:240px}.bubble{right:2px}.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}}
+  @media(max-width:600px){
+    .hero{grid-template-columns:1fr}
+    .pet-stage{min-height:255px}
+    .bubble{right:2px}
+    .stats{grid-template-columns:1fr 1fr}
+    .stats .stat:last-child{grid-column:1/-1}
+  }
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <main>
   <section class="hero">
-    <div class="card pet-stage">
+    <div id="petStage" class="card pet-stage">
       <div id="bubble" class="bubble">Ready when you are 🎹</div>
-      <div id="pet" class="pet" aria-label="Your evolving practice pet">
-        <div class="ear l"></div><div class="ear r"></div>
-        <div class="tail"></div>
-        <div class="body"></div><div class="belly"></div>
-        <div class="eye l"><div class="shine"></div></div><div class="eye r"><div class="shine"></div></div>
-        <div class="mouth"></div><div class="mark">♪</div><div class="crown">♛</div>
-        <div class="wings"><span>◖</span><span>◗</span></div>
+      <div class="pet-wrap">
+        <div id="pawL" class="paw l">👏</div>
+        <div id="pawR" class="paw r">👏</div>
+        <div id="pet" class="pet" aria-label="Your evolving practice pet">
+          <div class="ear l"></div><div class="ear r"></div>
+          <div class="tail"></div>
+          <div class="body"></div><div class="belly"></div>
+          <div class="eye l"><div class="shine"></div></div><div class="eye r"><div class="shine"></div></div>
+          <div class="cheek l"></div><div class="cheek r"></div>
+          <div class="mouth"></div><div class="mark">♪</div><div class="crown">♛</div>
+          <div class="wings"><span>◖</span><span>◗</span></div>
+        </div>
       </div>
+      <div class="applause">clap • clap • clap</div>
     </div>
 
     <div class="card">
       <span class="badge">30-minute daily quest</span>
-      <h1>Tempo Pet</h1>
+      <h1>Tempo Pet Maestro</h1>
       <p>Your pet grows only while it hears music-like piano playing — not just room noise.</p>
 
       <div class="progress" aria-label="Daily practice progress"><div id="bar" class="bar"></div></div>
@@ -99,13 +137,14 @@
       <div class="controls">
         <button id="startBtn" class="primary">🎤 Start practice</button>
         <button id="pauseBtn" class="secondary" disabled>Pause</button>
+        <button id="clapBtn" class="secondary toggle">👏 Pet clap: On</button>
       </div>
 
       <div class="meter">
         <div class="signal"><div id="signalBar"></div></div>
         <span id="listenState" class="note">Mic off</span>
       </div>
-      <p id="musicReason" class="note">Practice time starts after a few seconds of consistent musical tones.</p>
+      <p id="musicReason" class="note">Practice time starts after a little steady musical evidence, so it should feel less flickery.</p>
     </div>
   </section>
 
@@ -119,8 +158,8 @@
     <div id="log" class="log" aria-live="polite"></div>
     <details>
       <summary>How music detection works</summary>
-      <p class="note">The game looks for sustained pitched sound, clear frequency peaks, changing notes, and a piano-like tonal spectrum. Speech, claps, fans, and random bumps should usually fail the test. It deliberately waits for musical evidence before adding time.</p>
-      <p class="note">No audio is uploaded or recorded. Analysis happens in your browser.</p>
+      <p class="note">This version is deliberately steadier. It listens for sustained pitched sound, strong tonal peaks, and a piano-like spectrum. It waits a bit before turning “music detected” on, and it also waits a bit before turning it off. That helps avoid annoying flicker.</p>
+      <p class="note">No audio is uploaded or recorded. Analysis happens in your browser only.</p>
     </details>
   </section>
 </main>
@@ -128,7 +167,8 @@
 <script>
 (() => {
   "use strict";
-  const KEY = "tempoPetStateV1";
+  const KEY = "tempoPetStateV2";
+  const LEGACY_KEY = "tempoPetStateV1";
   const DAY_GOAL = 30*60;
   const roots = document;
   const $ = id => roots.getElementById(id);
@@ -137,36 +177,51 @@
     const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
     return `${y}-${m}-${day}`;
   }
+
   const defaults = {
-    day: localDateKey(), today:0, total:0, streak:0, lastCompletedDay:"",
-    evolutions:0, evolutionSeeds:[], diary:["Your Tempo Pet hatched. Play music to help it grow!"]
+    day: localDateKey(),
+    today: 0,
+    total: 0,
+    streak: 0,
+    lastCompletedDay: "",
+    evolutions: 0,
+    evolutionSeeds: [],
+    clapMode: true,
+    diary: ["Your Tempo Pet hatched. Play music to help it grow!"]
   };
+
   function readCookie(name){
     return document.cookie.split("; ").find(x=>x.startsWith(name+"="))?.split("=")[1] || "";
   }
+
   function loadState(){
     let x=null;
-    try{x=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
-    if(!x){
-      try{x=JSON.parse(decodeURIComponent(readCookie(KEY))||"null")}catch(e){}
+    for (const k of [KEY, LEGACY_KEY]) {
+      if (x) break;
+      try { x = JSON.parse(localStorage.getItem(k)||"null"); } catch(e){}
+      if (!x) { try { x = JSON.parse(decodeURIComponent(readCookie(k))||"null"); } catch(e){} }
     }
     return Object.assign({}, defaults, x||{});
   }
+
   let state = loadState();
 
   function save(){
     try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
     try{ document.cookie = KEY+"="+encodeURIComponent(JSON.stringify(state))+"; max-age=31536000; SameSite=Lax; path=/"; }catch(e){}
   }
+
   function dateDiffDays(a,b){
     if(!a||!b) return 999;
     const [ay,am,ad]=a.split("-").map(Number), [by,bm,bd]=b.split("-").map(Number);
     return Math.round((Date.UTC(by,bm-1,bd)-Date.UTC(ay,am-1,ad))/86400000);
   }
+
   function rollover(){
     const now=localDateKey();
     if(state.day!==now){
-      state.day=now; state.today=0;
+      state.day=now;
+      state.today=0;
       state.diary.unshift("A new practice day begins.");
       state.diary=state.diary.slice(0,16);
       save();
@@ -178,10 +233,12 @@
     s=Math.max(0,Math.floor(s));
     return `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
   }
+
   function seeded(seed){
     let x=(seed*9301+49297)%233280;
     return x/233280;
   }
+
   const palettes=[
     ["#8ed1c4","#daf4ef","#78b9ad"],
     ["#d9a5c9","#f5ddeb","#bf8fb0"],
@@ -189,12 +246,15 @@
     ["#9bb8e8","#dde8fb","#7e9cd0"],
     ["#b6d98b","#e5f3cf","#96be69"]
   ];
+
   function stylePet(){
     const p=$("pet");
     const count=state.evolutionSeeds.length;
     const seed=state.evolutionSeeds.reduce((a,b)=>a+b,17);
     const pal=palettes[Math.floor(seeded(seed+3)*palettes.length)];
-    p.style.setProperty("--body",pal[0]); p.style.setProperty("--belly",pal[1]); p.style.setProperty("--ear",pal[2]);
+    p.style.setProperty("--body",pal[0]);
+    p.style.setProperty("--belly",pal[1]);
+    p.style.setProperty("--ear",pal[2]);
     p.style.setProperty("--size",(112+Math.min(34,count*4))+"px");
     p.style.setProperty("--tailrot",(-8+seeded(seed+8)*32)+"deg");
     p.style.setProperty("--marksize", count>=1 ? (17+Math.min(12,count))+"px":"0px");
@@ -202,6 +262,11 @@
     p.style.setProperty("--wingsize", count>=7 ? "31px":"0px");
     if(count>=2) p.querySelector(".body").style.borderRadius = `${38+Math.floor(seeded(seed+12)*22)}% ${45+Math.floor(seeded(seed+15)*18)}% 42% 42%`;
   }
+
+  function escapeHTML(s){
+    return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))
+  }
+
   function render(){
     rollover();
     $("timeText").textContent=fmt(state.today);
@@ -213,12 +278,16 @@
     $("m20").classList.toggle("done",state.today>=1200);
     $("m30").classList.toggle("done",state.today>=1800);
     $("log").innerHTML=state.diary.map(x=>`<div>${escapeHTML(x)}</div>`).join("");
+    $("clapBtn").textContent = state.clapMode ? "👏 Pet clap: On" : "👏 Pet clap: Off";
+    $("clapBtn").classList.toggle("active", state.clapMode);
+    $("petStage").classList.toggle("clap-on", state.clapMode);
     stylePet();
   }
-  function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
   function evolve(label){
     const seed=Math.floor(Math.random()*1000000);
-    state.evolutionSeeds.push(seed); state.evolutions++;
+    state.evolutionSeeds.push(seed);
+    state.evolutions++;
     const surprises=[
       "Its ears shifted shape.","A musical marking appeared.","Its colours changed a little.",
       "Its tail changed its bounce.","Its body grew a tiny bit.","It developed a curious new expression."
@@ -230,6 +299,7 @@
     $("pet").classList.remove("bop"); void $("pet").offsetWidth; $("pet").classList.add("bop");
     save(); render();
   }
+
   function completeDay(){
     const today=localDateKey();
     if(state.lastCompletedDay===today) return;
@@ -240,15 +310,28 @@
     state.diary=state.diary.slice(0,16);
     save();
   }
+
   function checkMilestones(before,after){
     if(before<600 && after>=600) evolve("10-minute evolution");
     if(before<1200 && after>=1200) evolve("20-minute evolution");
     if(before<1800 && after>=1800){ evolve("30-minute evolution"); completeDay(); }
   }
 
+  function setPetMusicState(on){
+    $("pet").classList.toggle("happy", on);
+    $("petStage").classList.toggle("music", on);
+  }
+
+  $("clapBtn").addEventListener("click", () => {
+    state.clapMode = !state.clapMode;
+    save();
+    render();
+  });
+
   let ctx=null, analyser=null, src=null, stream=null, raf=0, active=false;
-  let freq=null, time=null, lastTick=0, musicalConfidence=0, noteHistory=[];
+  let freq=null, time=null, lastTick=0, noteHistory=[];
   let earnedBuffer=0, lastUi=0;
+  let musicalConfidence=0, musicActive=false, releaseTimer=0, stableMusicSeconds=0, messageCooldown=0;
 
   function spectralFeatures(){
     analyser.getByteFrequencyData(freq);
@@ -271,14 +354,12 @@
     const centroid=total ? (weighted/total)*binHz : 0;
     const highRatio=total ? high/total : 1;
 
-    // Spectral peak prominence around likely piano partials.
     let neighborhood=0, n=0;
     for(let j=Math.max(minBin,peakBin-5);j<=Math.min(maxBin,peakBin+5);j++){
       if(Math.abs(j-peakBin)>1){neighborhood+=(freq[j]/255)**2;n++;}
     }
     const prominence=peak/(neighborhood/Math.max(1,n)+1e-5);
 
-    // Autocorrelation pitch-strength on downsampled time waveform.
     const sr=ctx.sampleRate, minLag=Math.floor(sr/1200), maxLag=Math.min(Math.floor(sr/55),time.length-2);
     let best=0,bestLag=0, energy=0;
     for(let i=0;i<time.length;i++){let v=(time[i]-128)/128;energy+=v*v}
@@ -298,14 +379,13 @@
   }
 
   function classify(f){
-    // Conservative music-like heuristic: enough level + tonal/autocorrelated + spectrum not dominated by hiss.
-    const loud=f.rms>0.018;
+    const loud=f.rms>0.017;
     const tonal=(f.pitchStrength>0.34 || f.prominence>3.0);
     const plausiblePitch=f.pitch>50 && f.pitch<1600;
     const notHissy=f.highRatio<0.58 && f.centroid<3300;
+
     if(loud && tonal && plausiblePitch && notHissy){
       noteHistory.push(f.pitch); if(noteHistory.length>18) noteHistory.shift();
-      // Playing can repeat one note, so variation is a bonus, not mandatory.
       let variation=0;
       if(noteHistory.length>=4){
         const lo=Math.min(...noteHistory), hi=Math.max(...noteHistory);
@@ -313,99 +393,174 @@
       }
       return 0.72 + Math.min(.28,variation/18);
     }
+    if (loud && tonal && plausiblePitch) return 0.38;
     return 0;
   }
 
-  function loop(ts){
-    if(!active)return;
-    const dt=Math.min(0.25,(ts-lastTick)/1000||0); lastTick=ts;
-    const f=spectralFeatures(), score=classify(f);
-    musicalConfidence += score>0 ? dt*1.35 : -dt*1.8;
-    musicalConfidence=Math.max(0,Math.min(3,musicalConfidence));
-    const music=musicalConfidence>0.85;
+  function updateDetection(score, dt){
+    if(score>=0.7) musicalConfidence += dt*1.15;
+    else if(score>=0.35) musicalConfidence += dt*0.35;
+    else musicalConfidence -= dt*0.42;
 
-    $("signalBar").style.width=Math.min(100,f.rms*850)+"%";
-    $("listenState").textContent=music?"Music detected ✓":"Listening…";
-    $("listenState").className=music?"music-ok":"note";
-    $("musicReason").textContent=music
-      ? `Counting practice • tonal signal around ${Math.round(f.pitch||0)} Hz`
-      : (f.rms<0.018 ? "Waiting for your piano…" : "Sound heard, checking whether it is musical…");
+    musicalConfidence = Math.max(0, Math.min(3, musicalConfidence));
 
-    if(music){
-      earnedBuffer+=dt;
-      if(earnedBuffer>=0.5){
-        const add=earnedBuffer;earnedBuffer=0;
-        const before=state.today;
-        state.today+=add; state.total+=add;
-        checkMilestones(before,state.today);
-        if(ts-lastUi>450){save();render();lastUi=ts}
-        $("pet").classList.toggle("bop",Math.floor(ts/520)%2===0);
-        if(Math.random()<0.007){
-          const sayings=["Nice! I’m listening 🎶","Keep the melody going!","That feeds my music power!","You’re building my next evolution…"];
-          $("bubble").textContent=sayings[Math.floor(Math.random()*sayings.length)];
-        }
+    if(!musicActive){
+      if(musicalConfidence > 1.15){
+        musicActive = true;
+        releaseTimer = 1.15;    // hold on for a bit even if there is a brief gap
+        stableMusicSeconds = 0;
       }
     } else {
+      if(score >= 0.25){
+        releaseTimer = 1.15;
+      } else {
+        releaseTimer -= dt;
+      }
+      if((musicalConfidence < 0.28) && releaseTimer <= 0){
+        musicActive = false;
+        stableMusicSeconds = 0;
+      }
+    }
+
+    if(musicActive) stableMusicSeconds += dt;
+  }
+
+  function randomEncouragement(){
+    const sayings=[
+      "I can hear your music! 😊",
+      "Beautiful playing — keep going!",
+      "Clap clap! I’m cheering you on!",
+      "That was lovely 🎵",
+      "You’re powering up my next evolution!"
+    ];
+    return sayings[Math.floor(Math.random()*sayings.length)];
+  }
+
+  function loop(ts){
+    if(!active) return;
+    const dt=Math.min(0.25,(ts-lastTick)/1000||0);
+    lastTick=ts;
+
+    const f=spectralFeatures();
+    const score=classify(f);
+    updateDetection(score, dt);
+
+    $("signalBar").style.width=Math.min(100,f.rms*850)+"%";
+
+    if(musicActive){
+      setPetMusicState(true);
+      $("listenState").textContent="Music detected ✓";
+      $("listenState").className="music-ok";
+      $("musicReason").textContent = stableMusicSeconds < 1.3
+        ? "Nice — the sound is staying musical, so practice time is counting."
+        : `Counting practice • stable music detected around ${Math.round(f.pitch||0)} Hz`;
+
+      earnedBuffer += dt;
+      if(earnedBuffer >= 0.5){
+        const add=earnedBuffer; earnedBuffer=0;
+        const before=state.today;
+        state.today += add;
+        state.total += add;
+        checkMilestones(before, state.today);
+        if(ts-lastUi>450){save(); render(); lastUi=ts}
+        $("pet").classList.toggle("bop",Math.floor(ts/540)%2===0);
+      }
+
+      messageCooldown -= dt;
+      if(messageCooldown <= 0 && Math.random() < 0.008){
+        $("bubble").textContent = randomEncouragement();
+        messageCooldown = 4.5;
+      }
+    } else {
+      setPetMusicState(false);
       earnedBuffer=0;
       $("pet").classList.remove("bop");
+      $("listenState").textContent = active ? "Listening…" : "Mic off";
+      $("listenState").className="note";
+      $("musicReason").textContent = f.rms<0.017
+        ? "Waiting for your piano…"
+        : "Sound heard, checking whether it is musical…";
     }
+
     raf=requestAnimationFrame(loop);
   }
 
   async function start(){
-    if(active)return;
+    if(active) return;
     try{
-      stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
-      ctx=new (window.AudioContext||window.webkitAudioContext)();
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio:{
+          echoCancellation:false,
+          noiseSuppression:false,
+          autoGainControl:false
+        }
+      });
+
+      ctx = new (window.AudioContext||window.webkitAudioContext)();
       await ctx.resume();
-      analyser=ctx.createAnalyser(); analyser.fftSize=2048; analyser.smoothingTimeConstant=.55;
-      src=ctx.createMediaStreamSource(stream); src.connect(analyser);
-      freq=new Uint8Array(analyser.frequencyBinCount); time=new Uint8Array(analyser.fftSize);
-      active=true; musicalConfidence=0; noteHistory=[]; lastTick=performance.now();
-      $("startBtn").disabled=true;$("pauseBtn").disabled=false;
+      analyser = ctx.createAnalyser();
+      analyser.fftSize = 2048;
+      analyser.smoothingTimeConstant = .6;
+      src = ctx.createMediaStreamSource(stream);
+      src.connect(analyser);
+      freq = new Uint8Array(analyser.frequencyBinCount);
+      time = new Uint8Array(analyser.fftSize);
+
+      active=true;
+      musicalConfidence=0;
+      musicActive=false;
+      releaseTimer=0;
+      stableMusicSeconds=0;
+      messageCooldown=0;
+      noteHistory=[];
+      lastTick=performance.now();
+
+      $("startBtn").disabled=true;
+      $("pauseBtn").disabled=false;
       $("bubble").textContent="Play me something! 🎹";
       raf=requestAnimationFrame(loop);
     }catch(err){
-      let msg = "Microphone access failed.";
-      const isFile = location.protocol === "file:";
-      const insecure = !window.isSecureContext;
-      if (isFile || insecure) {
-        msg = "This page was opened as a local file, so the browser is blocking microphone access. Launch Tempo Pet through localhost using the starter included with the game.";
+      let msg = "Microphone access is needed. Allow the microphone, then try again.";
+      if (location.protocol === "file:" || location.protocol === "content:") {
+        msg = "This page is opened as a local file, so Chrome is blocking the microphone. Open the GitHub Pages website version instead.";
       } else if (err && err.name === "NotAllowedError") {
-        msg = "Microphone permission was blocked. Click the lock/site icon near the address bar, allow Microphone, then press Start practice again.";
+        msg = "Microphone permission was blocked. In Chrome, allow microphone access for this site, then reload.";
       } else if (err && err.name === "NotFoundError") {
-        msg = "No microphone was found. Check that your device microphone is connected and enabled.";
+        msg = "No microphone was found on this device.";
       } else if (err && err.name === "NotReadableError") {
-        msg = "Your microphone is busy or unavailable to the browser. Close other apps using it, then try again.";
-      } else if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        msg = "This browser does not expose microphone access here. Open Tempo Pet through localhost in Chrome, Edge, or Safari.";
-      } else if (err && err.message) {
-        msg = "Microphone error: " + err.message;
+        msg = "The microphone is busy or another app is using it. Close other apps and try again.";
       }
-      $("musicReason").textContent=msg;
-      $("listenState").textContent="Mic unavailable";
+      $("musicReason").textContent = msg;
+      $("listenState").textContent = "Mic unavailable";
+      $("bubble").textContent = "I can’t hear yet 🎤";
     }
   }
+
   function pause(){
-    active=false; cancelAnimationFrame(raf);
-    if(stream)stream.getTracks().forEach(t=>t.stop());
-    if(ctx)ctx.close().catch(()=>{});
-    stream=null;ctx=null;
-    $("startBtn").disabled=false;$("pauseBtn").disabled=true;
-    $("listenState").textContent="Paused";$("listenState").className="note";
+    active=false;
+    cancelAnimationFrame(raf);
+    if(stream) stream.getTracks().forEach(t=>t.stop());
+    if(ctx) ctx.close().catch(()=>{});
+    stream=null; ctx=null;
+
+    musicActive=false;
+    setPetMusicState(false);
+
+    $("startBtn").disabled=false;
+    $("pauseBtn").disabled=true;
+    $("listenState").textContent="Paused";
+    $("listenState").className="note";
     $("signalBar").style.width="0";
     $("musicReason").textContent="Your progress is saved. Start again whenever you’re ready.";
     $("bubble").textContent="I’ll keep your progress safe 🌙";
-    save();render();
+    save(); render();
   }
-  if (location.protocol === "file:" || !window.isSecureContext) {
-    $("musicReason").textContent = "Microphone needs the localhost launcher. If you opened this HTML by double-clicking it, close it and use Start Tempo Pet instead.";
-    $("listenState").textContent = "Needs localhost";
-  }
+
   $("startBtn").addEventListener("click",start);
   $("pauseBtn").addEventListener("click",pause);
   window.addEventListener("pagehide",save);
   setInterval(()=>{if(active)save()},5000);
+
   render();
 })();
 </script>
@@ -417,6 +572,5 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
   });
 }
 </script>
-
 </body>
 </html>
