@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Tempo Pet Maestro — VS Code Pets Reveal</title>
+<title>My Mystery Music Pet — VS Code Pets Reveal</title>
 <meta name="theme-color" content="#f7efe9">
 <style>
 :root{
@@ -38,10 +38,14 @@ h1{margin:0 0 5px; text-align:center; font-size:1.45rem}
 #maskCanvas{
   position:absolute; inset:0; width:224px; height:224px; image-rendering:pixelated; pointer-events:none;
 }
-.note{position:absolute; font-size:28px; opacity:0; pointer-events:none; animation-play-state:paused;}
-.pet-wrap.hearing .note{opacity:1; animation-play-state:running;}
-.note.n1{right:-8px; top:8px; animation:float 1s ease-out infinite}
-.note.n2{left:-10px; top:58px; animation:float 1s .35s ease-out infinite}
+.note{position:absolute; font-size:28px; opacity:0; pointer-events:none; animation:none;}
+.pet-wrap.hearing .note{opacity:1;}
+.note.n1{right:-8px; top:8px;}
+.note.n2{left:-10px; top:58px;}
+
+.pet-wrap.hearing .note.n1{animation:float 1s ease-out infinite}
+.pet-wrap.hearing .note.n2{animation:float 1s .35s ease-out infinite}
+
 @keyframes float{0%{transform:translateY(8px);opacity:0}30%{opacity:.95}100%{transform:translateY(-22px);opacity:0}}
 .pet-name{font-size:1.35rem; font-weight:800; margin:0 0 6px}
 .pill-row{display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 12px}
@@ -108,7 +112,7 @@ details.info-box[open] summary{margin-bottom:10px}
   box-shadow:0 4px 12px rgba(60,45,55,.08);
   color:#655960; font-size:.8rem; pointer-events:none;
 }
-.rhythm-heart{font-size:21px; line-height:1; transform-origin:center}
+.rhythm-heart{font-size:21px; line-height:1; transform-origin:center}.rhythm-label{font-size:.72rem;color:var(--muted);margin-left:2px}
 .rhythm-heart.beating{animation:rhythmBeat var(--rhythm-beat,.75s) ease-in-out infinite}
 @keyframes rhythmBeat{
   0%,100%{transform:scale(1)}
@@ -127,20 +131,48 @@ details.info-box[open] summary{margin-bottom:10px}
 }
 #maskCanvas{display:none !important}
 
+
+.reveal-steps{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  margin-top:9px;
+}
+.reveal-steps span{
+  text-align:center;
+  padding:7px 3px;
+  background:#f7f1ed;
+  border:1px solid var(--line);
+  border-radius:11px;
+  color:#655960;
+}
+.reveal-steps b{display:block;font-size:.74rem}
+.reveal-steps small{display:block;font-size:.7rem;color:var(--muted);margin-top:2px}
+.kid-tip{
+  margin:10px 0 0;
+  padding:9px 11px;
+  border-radius:13px;
+  background:#fff7e8;
+  border:1px solid rgba(160,120,60,.12);
+  color:#6c5a3e;
+  font-size:.8rem;
+  line-height:1.4;
+}
+
 </style>
 </head>
 <body>
 <main>
   <section class="card">
-    <h1>Tempo Pet Maestro</h1>
-    <p class="sub">Practise piano to slowly uncover a secretly chosen mystery companion. The picture starts 20% revealed, then grows smoothly from left to right.</p>
+    <h1>My Mystery Music Pet</h1>
+    <p class="sub">Play your piano to uncover your mystery pet! The more you practise, the more of your pet you get to see.</p>
 
     <div class="hero">
       <div>
         <div class="pet-panel">
           <div class="rhythm-badge">
             <span id="rhythmHeart" class="rhythm-heart">💗</span>
-            <span id="rhythmEstimate">~— BPM</span>
+            <span id="rhythmEstimate">~— BPM</span><span class="rhythm-label">Your rhythm</span>
           </div>
 
           <div id="petWrap" class="pet-wrap">
@@ -153,46 +185,53 @@ details.info-box[open] summary{margin-bottom:10px}
 
         <div class="metronome-under-pet">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-            <strong>Metronome</strong>
+            <strong>Beat Buddy</strong>
             <span class="small"><span id="bpmLabel">60</span> BPM</span>
           </div>
-          <input id="bpm" type="range" min="30" max="120" step="1" value="60" aria-label="Metronome beats per minute">
+          <input id="bpm" type="range" min="30" max="120" step="1" value="60" aria-label="Beat Buddy beats per minute">
           <div class="row" style="justify-content:flex-start;margin-top:8px">
-            <button id="metroBtn" class="secondary">Start metronome</button>
+            <button id="metroBtn" class="secondary">Start Beat Buddy</button>
           </div>
-          <p class="small" style="margin-bottom:0">Adjustable from 30–120 beats per minute. The detector suppresses the metronome clicks so they should not count as piano practice.</p>
+          <p class="small" style="margin-bottom:0">Use this steady beat to help you practise. Choose any speed from 30–120 BPM.</p>
         </div>
       </div>
 
       <div>
-        <div id="petName" class="pet-name">Mystery Pet</div>
+        <div id="petName" class="pet-name">Who could it be? 👀</div>
 
         <div class="center" style="margin-bottom:10px">
-          <span class="status"><span id="listenDot" class="dot"></span><span id="listenText">Waiting for piano</span></span>
+          <span class="status"><span id="listenDot" class="dot"></span><span id="listenText">Ready when you are 🎹</span></span>
         </div>
 
-        <div class="small">Today’s practice</div>
+        <div class="small">Your practice today</div>
         <div id="timer" class="timer">00:00 / 30:00</div>
         <div class="progress"><div id="progressBar"></div></div>
-        <p id="bubble" class="center small" style="margin-top:10px">Play a few notes so I can hear you 🎹</p>
+        <div class="reveal-steps" aria-label="Mystery pet reveal milestones">
+          <span><b>Start</b><small>20%</small></span>
+          <span><b>10 min</b><small>40%</small></span>
+          <span><b>20 min</b><small>70%</small></span>
+          <span><b>30 min</b><small>100% 🎉</small></span>
+        </div>
+        <p id="bubble" class="center small" style="margin-top:10px">Play a few notes and I’ll start listening 🎵</p>
+        <div class="kid-tip">🌟 Tip: little breaks are okay — your timer gives you a few seconds to breathe between songs.</div>
 
         <div class="row">
-          <button id="startBtn">Start listening</button>
-          <button id="stopBtn" class="secondary" disabled>Stop</button>
-          <button id="nextPetBtn" class="ghost" disabled>New mystery pet</button>
+          <button id="startBtn">Start listening 🎤</button>
+          <button id="stopBtn" class="secondary" disabled>Pause listening</button>
+          <button id="nextPetBtn" class="ghost" disabled>Meet a new mystery pet ✨</button>
         </div>
 
-        <div id="detectorStatus" class="detector-status">Waiting for audio…</div>
+        <div id="detectorStatus" class="detector-status">Waiting for your music…</div>
 
         <details class="info-box">
-          <summary>How does it know this is music?</summary>
+          <summary>How does it know I’m playing music? 🤔</summary>
           <ul class="info-list">
-            <li>It looks for a clear musical pitch, not just loud sound.</li>
-            <li>It checks whether the sound has a tonal spectrum instead of the flat, hissy pattern typical of white noise.</li>
-            <li>It waits for consistent musical evidence before the timer starts, so a single tap or random noise should not count.</li>
-            <li>When the music stops, it gives you about 5 seconds of breathing room before pausing the timer, so you can turn a page or move to another song without losing the flow.</li>
-            <li>The built-in metronome click is briefly ignored by the detector, so the metronome should not earn practice time by itself.</li>
-            <li>Audio is analysed locally in your browser. It is not uploaded or recorded.</li>
+            <li>It listens for musical notes, not just loud noises.</li>
+            <li>It checks whether the sound has the shape of music instead of a hiss or random noise.</li>
+            <li>It waits until it is sure you are really playing before the timer starts.</li>
+            <li>If you stop for a moment, you get about 5 seconds to turn a page, think, or move to your next song.</li>
+            <li>The app knows its own metronome clicks, so they do not earn practice time by themselves.</li>
+            <li>Your sound stays on your device. It is not recorded or sent anywhere.</li>
           </ul>
         </details>
       </div>
@@ -420,14 +459,14 @@ function render(){
   $("progressBar").style.width = `${Math.min(100, state.today/1800*100)}%`;
 
   const pet = currentPet();
-  $("petName").textContent = state.completedPet ? `You revealed: ${pet.name}` : "Mystery Pet";
+  $("petName").textContent = state.completedPet ? `You found: ${pet.name}` : "Who could it be? 👀";
     $("nextPetBtn").disabled = !state.completedPet;
   $("bubble").textContent = state.completedPet
-    ? "Mystery pet revealed! Start a new mystery pet when you are ready ✨"
-    : (musicActive ? "I hear you! Keep going 🎵" : (running ? "Play a few notes so I can hear you 🎹" : "Press Start listening to begin"));
+    ? "You did it! Your mystery pet is fully revealed! 🎉"
+    : (musicActive ? "I hear you! Keep going 🎵" : (running ? "Play a few notes and I’ll start listening 🎵" : "Press Start listening 🎤 to begin"));
 
   $("listenDot").classList.toggle("on", musicActive);
-  $("listenText").textContent = musicActive ? "I hear your piano" : "Waiting for piano";
+  $("listenText").textContent = musicActive ? "I hear your piano" : "Ready when you are 🎹";
   $("petWrap").classList.toggle("hearing", !!musicActive);
   drawMask();
 }
@@ -587,10 +626,10 @@ function audioLoop(now){
     if(el){
       el.className = "detector-status" + (detectorState==="music" ? " good" : detectorState==="checking" ? " checking" : "");
       el.textContent = detectorState==="music"
-        ? (sinceMusic > 900 ? "Short pause — keeping your practice time running…" : "Music detected ✓ — practice time is counting.")
+        ? (sinceMusic > 900 ? "Little pause — that’s okay! ⏳" : "I hear your music! 🎵 Your practice time is counting.")
         : detectorState==="checking"
-          ? "Sound heard — checking whether it is musical…"
-          : "Waiting for convincing piano sound…";
+          ? "I can hear something… is it music? 👂"
+          : "Waiting for some clear piano notes 🎹";
     }
   }
 
@@ -623,7 +662,7 @@ async function startListening(){
     onsetTimes=[]; lastOnsetAt=0; prevOnsetRms=0; estimatedRhythmBpm=null;
     if($("rhythmEstimate")) $("rhythmEstimate").textContent="~— BPM";
     if($("rhythmHeart")) $("rhythmHeart").classList.remove("beating");
-    if($("detectorStatus")) $("detectorStatus").textContent="Listening — play a few piano notes…";
+    if($("detectorStatus")) $("detectorStatus").textContent="I’m listening! Play a few piano notes 🎶";
     $("startBtn").disabled=true; $("stopBtn").disabled=false;
     render();
     raf=requestAnimationFrame(audioLoop);
@@ -633,7 +672,7 @@ async function startListening(){
 }
 function stopListening(){
   running=false; musicActive=false; confidence=0; lastDetectorState="waiting";
-  if($("detectorStatus")) { $("detectorStatus").className="detector-status"; $("detectorStatus").textContent="Listening stopped."; }
+  if($("detectorStatus")) { $("detectorStatus").className="detector-status"; $("detectorStatus").textContent="Listening paused."; }
   if($("rhythmHeart")) $("rhythmHeart").classList.remove("beating");
   if(raf) cancelAnimationFrame(raf);
   if(stream) stream.getTracks().forEach(t=>t.stop());
@@ -671,7 +710,7 @@ $("nextPetBtn").onclick=()=>{
 };
 $("metroBtn").onclick=()=>{
   metroOn=!metroOn;
-  $("metroBtn").textContent = metroOn ? "Stop metronome" : "Start metronome";
+  $("metroBtn").textContent = metroOn ? "Pause listening metronome" : "Start Beat Buddy";
   scheduleMetro();
 };
 $("bpm").oninput=e=>{
