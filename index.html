@@ -38,10 +38,8 @@ h1{margin:0 0 5px; text-align:center; font-size:1.45rem}
 #maskCanvas{
   position:absolute; inset:0; width:224px; height:224px; image-rendering:pixelated; pointer-events:none;
 }
-.note{
-  position:absolute; font-size:28px; opacity:0; pointer-events:none;
-}
-.pet-wrap.hearing .note{opacity:1}
+.note{position:absolute; font-size:28px; opacity:0; pointer-events:none; animation-play-state:paused;}
+.pet-wrap.hearing .note{opacity:1; animation-play-state:running;}
 .note.n1{right:-8px; top:8px; animation:float 1s ease-out infinite}
 .note.n2{left:-10px; top:58px; animation:float 1s .35s ease-out infinite}
 @keyframes float{0%{transform:translateY(8px);opacity:0}30%{opacity:.95}100%{transform:translateY(-22px);opacity:0}}
@@ -135,7 +133,7 @@ details.info-box[open] summary{margin-bottom:10px}
 <main>
   <section class="card">
     <h1>Tempo Pet Maestro</h1>
-    <p class="sub">Practise piano to slowly uncover a secretly chosen mystery companion. The picture starts 10% revealed, then grows smoothly from left to right.</p>
+    <p class="sub">Practise piano to slowly uncover a secretly chosen mystery companion. The picture starts 20% revealed, then grows smoothly from left to right.</p>
 
     <div class="hero">
       <div>
@@ -398,8 +396,23 @@ function updateRevealOrder(){
 }
 function drawMask(){
   const ratio = Math.min(1, state.currentPetSeconds / 1800);
-  const visible = Math.min(1, 0.10 + ratio * 0.90);
-  const hiddenRight = Math.max(0, (1-visible)*100);
+
+  // Reveal profile:
+  // start = 20%, 10 min = 40%, 20 min = 70%, 30 min = 100%
+  let visible = 0.20;
+  if(ratio <= (10/30)){
+    const local = ratio / (10/30);
+    visible = 0.20 + local * 0.20;   // 20% -> 40%
+  }else if(ratio <= (20/30)){
+    const local = (ratio - 10/30) / (10/30);
+    visible = 0.40 + local * 0.30;   // 40% -> 70%
+  }else{
+    const local = (ratio - 20/30) / (10/30);
+    visible = 0.70 + local * 0.30;   // 70% -> 100%
+  }
+
+  visible = Math.max(0.20, Math.min(1, visible));
+  const hiddenRight = Math.max(0, (1-visible) * 100);
   petImg.style.clipPath = `inset(0 ${hiddenRight}% 0 0)`;
 }
 function render(){
@@ -415,7 +428,7 @@ function render(){
 
   $("listenDot").classList.toggle("on", musicActive);
   $("listenText").textContent = musicActive ? "I hear your piano" : "Waiting for piano";
-  $("petWrap").classList.toggle("hearing", musicActive);
+  $("petWrap").classList.toggle("hearing", !!musicActive);
   drawMask();
 }
 
