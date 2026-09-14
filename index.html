@@ -78,6 +78,174 @@
   details{margin-top:14px}
   summary{cursor:pointer;color:var(--muted)}
   .badge{display:inline-block;background:var(--soft);border-radius:999px;padding:4px 9px;font-size:.78rem;font-weight:700}
+
+  /* Modular evolution system */
+  .pet{--body:#fff4ea;--belly:#fffdfa;--ear:#ffd5d1;--size:118px;--accent:#f2a7b5;--outline:#433b44}
+  .pet .body,.pet .ear,.pet .tail{border-color:var(--outline)}
+  .pet .body{background:var(--body)}
+  .pet .belly{background:var(--belly)}
+  .pet .ear{background:var(--ear)}
+  .pet .tail{background:var(--body)}
+
+  /* Ears */
+  .pet[data-ear="standard"] .ear.l{border-radius:70% 40% 60% 30%;transform:rotate(-14deg)}
+  .pet[data-ear="standard"] .ear.r{border-radius:40% 70% 30% 60%;transform:rotate(14deg)}
+  .pet[data-ear="floppy"] .ear{width:38%;height:34%;top:12%}
+  .pet[data-ear="floppy"] .ear.l{left:-2%;border-radius:70% 30% 70% 30%;transform:rotate(-48deg)}
+  .pet[data-ear="floppy"] .ear.r{right:-2%;border-radius:30% 70% 30% 70%;transform:rotate(48deg)}
+  .pet[data-ear="round"] .ear{width:30%;height:30%;top:7%;border-radius:50%}
+  .pet[data-ear="round"] .ear.l{left:12%;transform:rotate(-5deg)}
+  .pet[data-ear="round"] .ear.r{right:12%;transform:rotate(5deg)}
+  .pet[data-ear="oneup"] .ear.l{height:48%;top:-4%;border-radius:70% 40% 55% 35%;transform:rotate(-6deg)}
+  .pet[data-ear="oneup"] .ear.r{height:31%;top:13%;border-radius:45% 70% 35% 65%;transform:rotate(38deg)}
+  .pet[data-ear="folded"] .ear{height:34%;top:8%}
+  .pet[data-ear="folded"] .ear.l{transform:rotate(-32deg);border-radius:65% 35% 75% 25%}
+  .pet[data-ear="folded"] .ear.r{transform:rotate(32deg);border-radius:35% 65% 25% 75%}
+  .pet[data-ear="long"] .ear{height:58%;top:-20%;width:27%}
+  .pet[data-ear="long"] .ear.l{left:15%;border-radius:75% 35% 55% 45%;transform:rotate(-5deg)}
+  .pet[data-ear="long"] .ear.r{right:15%;border-radius:35% 75% 45% 55%;transform:rotate(5deg)}
+  .pet[data-ear="droopy"] .ear{height:40%;top:7%;width:36%}
+  .pet[data-ear="droopy"] .ear.l{left:-6%;transform:rotate(-58deg);border-radius:75% 30% 75% 35%}
+  .pet[data-ear="droopy"] .ear.r{right:-6%;transform:rotate(58deg);border-radius:30% 75% 35% 75%}
+  .pet[data-ear="tipped"] .ear{height:43%;top:0}
+  .pet[data-ear="tipped"] .ear.l{clip-path:polygon(50% 0,100% 100%,0 100%);border-radius:35%}
+  .pet[data-ear="tipped"] .ear.r{clip-path:polygon(50% 0,100% 100%,0 100%);border-radius:35%}
+
+  /* Eyes */
+  .pet[data-eye="default"] .eye{border-radius:50%;height:12%}
+  .pet[data-eye="happy"] .eye{height:8%;background:transparent;border:0;border-bottom:3px solid #2d2930;border-radius:50%;top:40%}
+  .pet[data-eye="closed"] .eye{height:5%;background:transparent;border:0;border-bottom:3px solid #2d2930;border-radius:50%;top:42%}
+  .pet[data-eye="sparkle"] .eye{box-shadow:inset 0 0 0 2px #fff}
+  .pet[data-eye="sleepy"] .eye{height:7%;background:transparent;border:0;border-top:3px solid #2d2930;border-radius:50%;top:42%}
+  .pet[data-eye="starry"] .eye{background:#364f8d}
+  .pet[data-eye="dot"] .eye{width:7%;height:8%;top:41%}
+  .pet[data-eye="heart"] .eye{background:#78485e;transform:rotate(45deg);border-radius:4px}
+  .pet[data-eye="heart"] .eye .shine{display:none}
+
+  /* Head feature */
+  .head-feature{position:absolute;left:50%;top:7%;transform:translateX(-50%);z-index:4;font-size:0;pointer-events:none}
+  .pet[data-head="tuft"] .head-feature::before{content:"";display:block;width:25px;height:20px;background:var(--body);border:3px solid var(--outline);border-radius:70% 30% 65% 35%;transform:rotate(-8deg)}
+  .pet[data-head="curly"] .head-feature::before{content:"〰";font-size:28px;color:var(--outline);font-weight:700}
+  .pet[data-head="sidefringe"] .head-feature::before{content:"";display:block;width:32px;height:18px;background:var(--body);border:3px solid var(--outline);border-radius:70% 30% 70% 30%;transform:translateX(10px) rotate(18deg)}
+  .pet[data-head="swirl"] .head-feature::before{content:"↻";font-size:25px;color:var(--outline);font-weight:700}
+  .pet[data-head="leaf"] .head-feature::before{content:"🌱";font-size:24px}
+  .pet[data-head="bow"] .head-feature::before{content:"🎀";font-size:25px}
+  .pet[data-head="flower"] .head-feature::before{content:"🌼";font-size:24px}
+
+  /* Face markings */
+  .face-mark{position:absolute;left:50%;top:48%;transform:translateX(-50%);z-index:5;font-size:0;pointer-events:none}
+  .pet[data-mark="cheeks"] .cheek{opacity:.6}
+  .pet[data-mark="heart"] .face-mark::before{content:"♥";font-size:14px;color:#ee8ca6;position:absolute;left:-5px;top:-28px}
+  .pet[data-mark="patch"] .face-mark::before{content:"";position:absolute;width:20px;height:24px;background:#c8927f55;border-radius:50%;left:16px;top:-26px}
+  .pet[data-mark="freckles"] .face-mark::before{content:"••  ••";font-size:12px;letter-spacing:8px;color:#9a6c63;position:absolute;left:-33px;top:7px}
+  .pet[data-mark="star"] .face-mark::before{content:"★";font-size:13px;color:#e9b64d;position:absolute;left:22px;top:7px}
+  .pet[data-mark="stripe"] .face-mark::before{content:"";position:absolute;width:9px;height:23px;background:#cf9a8655;border-radius:50%;left:-4px;top:-35px}
+  .pet[data-mark="blush"] .cheek{opacity:.85}
+
+  /* Outfit */
+  .outfit{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);z-index:6;width:70%;height:40%;pointer-events:none}
+  .pet[data-outfit="scarf"] .outfit::before{content:"";position:absolute;left:12%;right:12%;top:0;height:18%;background:#eaa4aa;border:3px solid var(--outline);border-radius:12px}
+  .pet[data-outfit="hoodie"] .outfit::before{content:"";position:absolute;inset:5% 0 0;background:#9fc3ef;border:3px solid var(--outline);border-radius:20px 20px 28px 28px}
+  .pet[data-outfit="overalls"] .outfit::before{content:"";position:absolute;inset:8% 8% 0;background:#a8c79d;border:3px solid var(--outline);border-radius:8px 8px 24px 24px}
+  .pet[data-outfit="sweater"] .outfit::before{content:"";position:absolute;inset:8% 0 0;background:#c9a8ea;border:3px solid var(--outline);border-radius:18px 18px 25px 25px}
+  .pet[data-outfit="collar"] .outfit::before{content:"";position:absolute;left:12%;right:12%;top:2%;height:17%;background:#f5eadc;border:3px solid var(--outline);border-radius:50%}
+  .pet[data-outfit="dress"] .outfit::before{content:"";position:absolute;inset:7% -5% 0;background:#f2a8bd;border:3px solid var(--outline);border-radius:20px 20px 34px 34px}
+  .pet[data-outfit="cape"] .outfit::before{content:"";position:absolute;inset:3% -9% 5%;background:#99b8df;border:3px solid var(--outline);clip-path:polygon(20% 0,80% 0,100% 100%,0 100%)}
+
+  /* Tail */
+  .pet[data-tail="round"] .tail{width:29%;height:29%;right:-18%;top:61%;border-radius:50%}
+  .pet[data-tail="cotton"] .tail{width:34%;height:34%;right:-20%;top:58%;border-radius:50%;box-shadow:8px -3px 0 var(--body),5px 8px 0 var(--body)}
+  .pet[data-tail="heart"] .tail{width:30%;height:28%;right:-20%;top:60%;transform:rotate(45deg);border-radius:5px}
+  .pet[data-tail="leaf"] .tail{width:36%;height:20%;right:-26%;top:59%;border-radius:100% 0 100% 0;transform:rotate(-20deg);background:#a9c99d}
+  .pet[data-tail="fluffy"] .tail{width:45%;height:32%;right:-31%;top:54%;border-radius:60% 45% 60% 45%}
+  .pet[data-tail="spiral"] .tail{background:transparent;border:5px solid var(--outline);border-left-color:transparent;width:34%;height:34%;right:-26%;top:54%;border-radius:50%}
+  .pet[data-tail="stub"] .tail{width:22%;height:18%;right:-11%;top:64%;border-radius:50%}
+  .pet[data-tail="star"] .tail{width:32%;height:32%;right:-22%;top:56%;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 94%,50% 72%,21% 94%,32% 57%,2% 35%,39% 35%);background:#f5cf6c;border:0}
+
+  /* Accessories */
+  .accessory{position:absolute;z-index:10;pointer-events:none;font-size:0}
+  .pet[data-accessory="bow"] .accessory{left:67%;top:10%}.pet[data-accessory="bow"] .accessory::before{content:"🎀";font-size:25px}
+  .pet[data-accessory="flower"] .accessory{left:69%;top:9%}.pet[data-accessory="flower"] .accessory::before{content:"🌼";font-size:23px}
+  .pet[data-accessory="crown"] .accessory{left:40%;top:-13%}.pet[data-accessory="crown"] .accessory::before{content:"👑";font-size:27px}
+  .pet[data-accessory="beret"] .accessory{left:43%;top:-5%}.pet[data-accessory="beret"] .accessory::before{content:"🧢";font-size:27px}
+  .pet[data-accessory="headphones"] .accessory{left:29%;top:14%}.pet[data-accessory="headphones"] .accessory::before{content:"🎧";font-size:42px}
+  .pet[data-accessory="music"] .accessory{left:72%;top:36%}.pet[data-accessory="music"] .accessory::before{content:"🎵";font-size:23px}
+  .pet[data-accessory="bag"] .accessory{left:72%;top:59%}.pet[data-accessory="bag"] .accessory::before{content:"👜";font-size:22px}
+  .pet[data-accessory="glasses"] .accessory{left:27%;top:36%}.pet[data-accessory="glasses"] .accessory::before{content:"👓";font-size:39px}
+
+  .trait-summary{margin-top:10px;font-size:.78rem;color:var(--muted);text-align:center}
+
+
+  /* Stage artwork pet system */
+
+  /* Immediate feedback while genuine music is being heard */
+  .pet-art.listening{
+    animation:petListening .72s ease-in-out infinite;
+    transform-origin:50% 88%;
+  }
+  @keyframes petListening{
+    0%,100%{transform:translateY(0) rotate(0deg) scale(1)}
+    25%{transform:translateY(-3px) rotate(-1deg) scale(1.008)}
+    50%{transform:translateY(-6px) rotate(0deg) scale(1.014)}
+    75%{transform:translateY(-3px) rotate(1deg) scale(1.008)}
+  }
+  .pet-art-wrap.hearing::after{
+    content:"♪";
+    position:absolute;
+    right:5%;
+    top:8%;
+    font-size:1.6rem;
+    opacity:.85;
+    animation:heardNote 1s ease-out infinite;
+    pointer-events:none;
+  }
+  @keyframes heardNote{
+    0%{transform:translateY(5px) scale(.9);opacity:0}
+    30%{opacity:.9}
+    100%{transform:translateY(-15px) scale(1.08);opacity:0}
+  }
+
+  .pet-art-wrap{
+    position:relative;
+    width:min(300px,82vw);
+    margin:0 auto;
+    display:grid;
+    place-items:center;
+  }
+  .pet-art{
+    display:block;
+    width:100%;
+    max-height:390px;
+    object-fit:contain;
+    border-radius:24px;
+    filter:drop-shadow(0 10px 16px rgba(60,45,65,.10));
+    transition:transform .22s ease;
+  }
+  .pet-art.celebrate{
+    animation:petCelebrate .72s ease both;
+  }
+  @keyframes petCelebrate{
+    0%{transform:translateY(0) scale(1)}
+    26%{transform:translateY(-9px) scale(1.035) rotate(-1.2deg)}
+    50%{transform:translateY(0) scale(1.02) rotate(1.2deg)}
+    74%{transform:translateY(-5px) scale(1.025)}
+    100%{transform:translateY(0) scale(1)}
+  }
+  .stage-chip{
+    margin-top:8px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:5px 10px;
+    border-radius:999px;
+    background:rgba(255,255,255,.72);
+    border:1px solid rgba(80,65,85,.10);
+    font-size:.8rem;
+    color:var(--muted);
+  }
+  /* Keep the old CSS pet in the document for state compatibility, but don't show it. */
+  #pet{display:none!important}
+
   @media(max-width:600px){
     .hero{grid-template-columns:1fr}
     .pet-stage{min-height:255px}
@@ -94,6 +262,11 @@
     <div id="petStage" class="card pet-stage">
       <div id="bubble" class="bubble">Ready when you are 🎹</div>
       <div class="pet-wrap">
+        <div class="pet-art-wrap">
+          <img id="petArt" class="pet-art" src="pets/pet_01.jpg" alt="Tempo Pet evolution stage 1">
+          <div id="stageChip" class="stage-chip">Stage 1 of 10</div>
+        </div>
+
         <div id="pet" class="pet" aria-label="Your evolving practice pet">
           <div class="ear l"></div><div class="ear r"></div>
           <div class="tail"></div>
@@ -140,7 +313,7 @@
         <div class="signal"><div id="signalBar"></div></div>
         <span id="listenState" class="note">Mic off</span>
       </div>
-      <p id="musicReason" class="note">Practice time starts after a little steady musical evidence, so it should feel less flickery.</p>
+      <p id="musicReason" class="note">Practice time starts after steady musical evidence and stops quickly when you stop playing. The pet’s smile is smoothed separately so it does not flicker.</p>
     </div>
   </section>
 
@@ -154,8 +327,10 @@
     <div id="log" class="log" aria-live="polite"></div>
     <details>
       <summary>How music detection works</summary>
-      <p class="note">This version is deliberately steadier. It listens for sustained pitched sound, strong tonal peaks, and a piano-like spectrum. It waits a bit before turning “music detected” on, and it also waits a bit before turning it off. That helps avoid annoying flicker.</p>
+      <p class="note">This version is deliberately steadier. It looks for sustained pitch, strong tonal structure, and a non-flat spectrum. White noise is specifically rejected because its spectrum is much flatter than a piano tone. It also waits before switching music detection on or off, which reduces flicker.</p>
       <p class="note">No audio is uploaded or recorded. Analysis happens in your browser only.</p>
+      <p class="note"><strong>Evolution:</strong> every 10 minutes of real practice advances your pet to the next illustrated growth stage. The stage is saved between days.</p>
+
     </details>
   </section>
 </main>
@@ -182,9 +357,13 @@
     lastCompletedDay: "",
     evolutions: 0,
     evolutionSeeds: [],
+    milestoneDay: localDateKey(),
+    claimedMilestones: [],
+    petTraits: null,
+    traitHistory: [],
     metronomeOn: false,
     metronomeBpm: 80,
-    diary: ["Your Tempo Pet hatched. Play music to help it grow!"]
+    diary: ["Your Tempo Pet hatched. Every 10 minutes of real practice helps it visibly grow up!"]
   };
 
   function readCookie(name){
@@ -219,6 +398,8 @@
     if(state.day!==now){
       state.day=now;
       state.today=0;
+      state.milestoneDay=now;
+      state.claimedMilestones=[];
       state.diary.unshift("A new practice day begins.");
       state.diary=state.diary.slice(0,16);
       save();
@@ -244,20 +425,124 @@
     ["#b6d98b","#e5f3cf","#96be69"]
   ];
 
+
+  const TRAITS = {
+    ear:["standard","floppy","round","oneup","folded","long","droopy","tipped"],
+    eye:["default","happy","closed","sparkle","sleepy","starry","dot","heart"],
+    head:["none","tuft","curly","sidefringe","swirl","leaf","bow","flower"],
+    mark:["none","cheeks","heart","patch","freckles","star","stripe","blush"],
+    outfit:["default","scarf","hoodie","overalls","sweater","collar","dress","cape"],
+    tail:["round","cotton","heart","leaf","fluffy","spiral","stub","star"],
+    accessory:["none","bow","flower","crown","beret","headphones","music","bag","glasses"],
+    palette:["cream","strawberry","mint","sky","lavender","peach","lemon","sage","ocean","dusk"]
+  };
+
+  const PALETTES = {
+    cream:["#fff4ea","#fffdfa","#ffd8d0","#eea8b0"],
+    strawberry:["#ffe8ed","#fff8f7","#f7b4c5","#e88aa3"],
+    mint:["#e6f6ef","#f8fffb","#bce2d4","#76bca5"],
+    sky:["#e8f2ff","#fbfdff","#bfd8fa","#88afe3"],
+    lavender:["#f0eaff","#fcfaff","#d2c1ef","#a98ad5"],
+    peach:["#fff0e7","#fffaf6","#ffcdb6","#ee9b7d"],
+    lemon:["#fff7db","#fffdf5","#f5df93","#deb951"],
+    sage:["#edf3e8","#fbfdf9","#cbd9bd","#95af80"],
+    ocean:["#e9f4f8","#fbfeff","#b6d8e4","#80adc0"],
+    dusk:["#efeaf2","#faf7fb","#cdbdcc","#9d86a4"]
+  };
+
+  function randomChoice(arr, exclude=null){
+    const pool=exclude==null ? arr : arr.filter(x=>x!==exclude);
+    return pool[Math.floor(Math.random()*pool.length)];
+  }
+
+  function makeInitialTraits(){
+    return {
+      ear:"standard",
+      eye:"default",
+      head:"none",
+      mark:"cheeks",
+      outfit:"default",
+      tail:"cotton",
+      accessory:"none",
+      palette:"cream"
+    };
+  }
+
+  function ensurePetTraits(){
+    if(!state.petTraits || typeof state.petTraits!=="object"){
+      state.petTraits=makeInitialTraits();
+
+      // Migration: preserve some personality from the older evolution count.
+      const oldCount=Math.max(0,Number(state.evolutions)||0);
+      const keys=["ear","eye","head","mark","outfit","tail","accessory"];
+      for(let i=0;i<Math.min(oldCount,keys.length);i++){
+        const k=keys[i];
+        state.petTraits[k]=randomChoice(TRAITS[k],state.petTraits[k]);
+      }
+      if(oldCount>1) state.petTraits.palette=randomChoice(TRAITS.palette,state.petTraits.palette);
+      save();
+    }
+
+    // Repair any missing/invalid traits safely.
+    for(const [k,opts] of Object.entries(TRAITS)){
+      if(!opts.includes(state.petTraits[k])){
+        state.petTraits[k]=k==="palette" ? "cream" : makeInitialTraits()[k];
+      }
+    }
+  }
+
+  function evolveTwoTraits(){
+    ensurePetTraits();
+
+    // Palette changes occasionally, otherwise choose two visible shape/style groups.
+    const baseKeys=["ear","eye","head","mark","outfit","tail","accessory"];
+    const keys=[...baseKeys];
+    if(Math.random()<0.28) keys.push("palette");
+
+    // Choose exactly two different dimensions.
+    const first=randomChoice(keys);
+    const second=randomChoice(keys,first);
+
+    const before={...state.petTraits};
+
+    state.petTraits[first]=randomChoice(TRAITS[first],state.petTraits[first]);
+    state.petTraits[second]=randomChoice(TRAITS[second],state.petTraits[second]);
+
+    state.traitHistory=Array.isArray(state.traitHistory)?state.traitHistory:[];
+    state.traitHistory.unshift({
+      at:new Date().toISOString(),
+      changed:[first,second],
+      before,
+      after:{...state.petTraits}
+    });
+    state.traitHistory=state.traitHistory.slice(0,60);
+
+    return [first,second];
+  }
+
+  function applyPetTraits(){
+    // Legacy compatibility: visual appearance is now handled by the stage artwork.
+  }
+
+
+  function updatePetListeningVisual(){
+    const art=$("petArt");
+    const wrap=art ? art.closest(".pet-art-wrap") : null;
+    const heard=!!musicActive;
+    if(art) art.classList.toggle("listening",heard);
+    if(wrap) wrap.classList.toggle("hearing",heard);
+  }
+
   function stylePet(){
-    const p=$("pet");
-    const count=state.evolutionSeeds.length;
-    const seed=state.evolutionSeeds.reduce((a,b)=>a+b,17);
-    const pal=palettes[Math.floor(seeded(seed+3)*palettes.length)];
-    p.style.setProperty("--body",pal[0]);
-    p.style.setProperty("--belly",pal[1]);
-    p.style.setProperty("--ear",pal[2]);
-    p.style.setProperty("--size",(112+Math.min(34,count*4))+"px");
-    p.style.setProperty("--tailrot",(-8+seeded(seed+8)*32)+"deg");
-    p.style.setProperty("--marksize", count>=1 ? (17+Math.min(12,count))+"px":"0px");
-    p.style.setProperty("--crownsize", count>=4 ? "25px":"0px");
-    p.style.setProperty("--wingsize", count>=7 ? "31px":"0px");
-    if(count>=2) p.querySelector(".body").style.borderRadius = `${38+Math.floor(seeded(seed+12)*22)}% ${45+Math.floor(seeded(seed+15)*18)}% 42% 42%`;
+    // Stage 1 is the hatch/start form. Each evolution advances one artwork stage.
+    const stage=Math.max(1,Math.min(10,(Number(state.evolutions)||0)+1));
+    const art=$("petArt");
+    if(art){
+      art.src=`pets/pet_${String(stage).padStart(2,"0")}.jpg`;
+      art.alt=`Tempo Pet evolution stage ${stage}`;
+    }
+    const chip=$("stageChip");
+    if(chip) chip.textContent=`Stage ${stage} of 10`;
   }
 
   function escapeHTML(s){
@@ -280,22 +565,30 @@
     $("bpmSlider").value = state.metronomeBpm || 80;
     $("bpmText").textContent = `${state.metronomeBpm || 80} BPM`;
     stylePet();
+    updatePetListeningVisual();
   }
 
   function evolve(label){
-    const seed=Math.floor(Math.random()*1000000);
-    state.evolutionSeeds.push(seed);
-    state.evolutions++;
-    const surprises=[
-      "Its ears shifted shape.","A musical marking appeared.","Its colours changed a little.",
-      "Its tail changed its bounce.","Its body grew a tiny bit.","It developed a curious new expression."
-    ];
-    const surprise=surprises[Math.floor(Math.random()*surprises.length)];
-    state.diary.unshift(`${label}: ${surprise}`);
+    state.evolutions=(Number(state.evolutions)||0)+1;
+
+    const stage=Math.max(1,Math.min(10,state.evolutions+1));
+    state.diary.unshift(`${label}: your Tempo Pet grew into stage ${stage}.`);
     state.diary=state.diary.slice(0,16);
-    $("bubble").textContent=["Whoa—new look! ✨","I grew! Keep playing!","That sounded magical 🎵","Mystery evolution unlocked!"][Math.floor(Math.random()*4)];
-    $("pet").classList.remove("bop"); void $("pet").offsetWidth; $("pet").classList.add("bop");
-    save(); render();
+
+    $("bubble").textContent = stage<10
+      ? `I grew! Stage ${stage} unlocked ✨`
+      : "I’m all grown up for this chapter! ✨";
+
+    save();
+    render();
+
+    // Calm milestone celebration. This is deliberately not a continuous clap.
+    const art=$("petArt");
+    if(art){
+      art.classList.remove("celebrate");
+      void art.offsetWidth;
+      art.classList.add("celebrate");
+    }
   }
 
   function completeDay(){
@@ -309,10 +602,68 @@
     save();
   }
 
+  function ensureMilestoneState(){
+    const todayKey=localDateKey();
+
+    // Migration from older versions: if today's timer has already passed
+    // milestones, preserve the likely 10-minute reward and repair the
+    // reported missed 20-minute reward.
+    if(!Array.isArray(state.claimedMilestones)){
+      state.claimedMilestones=[];
+    }
+    if(!state.milestoneDay){
+      state.milestoneDay=todayKey;
+      if(state.today>=600 && state.evolutions>0) state.claimedMilestones.push(10);
+      if(state.today>=1800 && state.lastCompletedDay===todayKey) state.claimedMilestones.push(30);
+    }
+
+    if(state.milestoneDay!==todayKey){
+      state.milestoneDay=todayKey;
+      state.claimedMilestones=[];
+    }
+
+    state.claimedMilestones=[...new Set(state.claimedMilestones)].sort((a,b)=>a-b);
+  }
+
+  function claimMilestone(minutes){
+    ensureMilestoneState();
+    if(state.claimedMilestones.includes(minutes)) return;
+
+    // Claim first, then evolve. evolve() calls render(), so claiming first
+    // prevents a milestone from being awarded twice during nested renders.
+    state.claimedMilestones.push(minutes);
+    state.claimedMilestones.sort((a,b)=>a-b);
+    save();
+
+    if(minutes===10) evolve("10-minute evolution");
+    if(minutes===20) evolve("20-minute evolution");
+    if(minutes===30){
+      evolve("30-minute evolution");
+      completeDay();
+    }
+  }
+
   function checkMilestones(before,after){
-    if(before<600 && after>=600) evolve("10-minute evolution");
-    if(before<1200 && after>=1200) evolve("20-minute evolution");
-    if(before<1800 && after>=1800){ evolve("30-minute evolution"); completeDay(); }
+    ensureMilestoneState();
+    if(after>=600) claimMilestone(10);
+    if(after>=1200) claimMilestone(20);
+    if(after>=1800) claimMilestone(30);
+  }
+
+  function recoverMissedMilestones(){
+    ensureMilestoneState();
+
+    // This repairs the specific old-version bug where the timer was already
+    // at/past 20:00 but the crossing event was missed.
+    if(state.today>=1200 && !state.claimedMilestones.includes(20)){
+      claimMilestone(20);
+    }
+
+    if(state.today>=1800 && !state.claimedMilestones.includes(30)){
+      claimMilestone(30);
+    }
+
+    save();
   }
 
   function setPetMusicState(on){
@@ -320,9 +671,10 @@
     $("petStage").classList.toggle("music", on);
   }
 
-  let metroTimer=null, metroAudio=null;
+  let metroTimer=null, metroAudio=null, lastMetroBeatAt=-Infinity;
   function clickBeat(){
     if(!state.metronomeOn) return;
+    lastMetroBeatAt = performance.now();
     if(!metroAudio) metroAudio = new (window.AudioContext||window.webkitAudioContext)();
     const osc=metroAudio.createOscillator();
     const gain=metroAudio.createGain();
@@ -362,6 +714,7 @@
   let freq=null, time=null, lastTick=0, noteHistory=[];
   let earnedBuffer=0, lastUi=0;
   let musicalConfidence=0, musicActive=false, releaseTimer=0, stableMusicSeconds=0, messageCooldown=0;
+  let lastConvincingMusicAt=-Infinity;
 
   function spectralFeatures(){
     analyser.getByteFrequencyData(freq);
@@ -384,6 +737,19 @@
     const centroid=total ? (weighted/total)*binHz : 0;
     const highRatio=total ? high/total : 1;
 
+    // White-noise guard:
+    // tonal sounds have a "peaky" spectrum; white noise is much flatter.
+    let logSum=0, flatCount=0;
+    for(let i=minBin;i<=maxBin;i++){
+      const e=(freq[i]/255)**2;
+      logSum += Math.log(e + 1e-8);
+      flatCount++;
+    }
+    const arithmeticMean = total / Math.max(1, flatCount);
+    const geometricMean = Math.exp(logSum / Math.max(1, flatCount));
+    const spectralFlatness = arithmeticMean > 0 ? geometricMean / arithmeticMean : 1;
+    const spectralCrest = arithmeticMean > 0 ? peak / arithmeticMean : 0;
+
     let neighborhood=0, n=0;
     for(let j=Math.max(minBin,peakBin-5);j<=Math.min(maxBin,peakBin+5);j++){
       if(Math.abs(j-peakBin)>1){neighborhood+=(freq[j]/255)**2;n++;}
@@ -405,49 +771,64 @@
       }
     }
     const pitch=bestLag?sr/bestLag:0;
-    return {rms,peak,prominence,centroid,highRatio,pitch,pitchStrength:best};
+    return {rms,peak,prominence,centroid,highRatio,pitch,pitchStrength:best,spectralFlatness,spectralCrest};
   }
 
   function classify(f){
-    const loud=f.rms>0.017;
-    const tonal=(f.pitchStrength>0.34 || f.prominence>3.0);
-    const plausiblePitch=f.pitch>50 && f.pitch<1600;
-    const notHissy=f.highRatio<0.58 && f.centroid<3300;
+    const loud = f.rms > 0.017;
+    const plausiblePitch = f.pitch > 50 && f.pitch < 1600;
+    const notHissy = f.highRatio < 0.55 && f.centroid < 3200;
 
-    if(loud && tonal && plausiblePitch && notHissy){
-      noteHistory.push(f.pitch); if(noteHistory.length>18) noteHistory.shift();
-      let variation=0;
-      if(noteHistory.length>=4){
-        const lo=Math.min(...noteHistory), hi=Math.max(...noteHistory);
-        variation=Math.log2(Math.max(hi,1)/Math.max(lo,1))*12;
-      }
-      return 0.72 + Math.min(.28,variation/18);
+    // A real piano tone should be noticeably less "flat" than white noise.
+    const noiseRejected = f.spectralFlatness < 0.50;
+
+    // Require convincing tonal structure. Do not let a single random noise peak
+    // qualify by itself.
+    const strongAutocorrelation = f.pitchStrength > 0.43;
+    const strongPeak = f.prominence > 3.6;
+    const peakySpectrum = f.spectralCrest > 4.2;
+
+    const clearlyTonal =
+      (strongAutocorrelation && noiseRejected && peakySpectrum) ||
+      (f.pitchStrength > 0.36 && strongPeak && f.spectralFlatness < 0.38 && peakySpectrum);
+
+    if(loud && plausiblePitch && notHissy && clearlyTonal){
+      noteHistory.push(f.pitch);
+      if(noteHistory.length>18) noteHistory.shift();
+
+      // Note changes are fine (it may be a melody), but they are no longer
+      // used to turn weak/noisy evidence into "music".
+      return 0.82;
     }
-    if (loud && tonal && plausiblePitch) return 0.38;
+
     return 0;
   }
 
   function updateDetection(score, dt){
-    if(score>=0.7) musicalConfidence += dt*1.15;
-    else if(score>=0.35) musicalConfidence += dt*0.35;
-    else musicalConfidence -= dt*0.42;
+    if(score >= 0.8) musicalConfidence += dt * 1.05;
+    else musicalConfidence -= dt * 0.72;
 
     musicalConfidence = Math.max(0, Math.min(3, musicalConfidence));
 
     if(!musicActive){
-      if(musicalConfidence > 1.15){
+      // About 1.3 seconds of convincing musical evidence before counting starts.
+      if(musicalConfidence > 1.35){
         musicActive = true;
-        releaseTimer = 1.15;    // hold on for a bit even if there is a brief gap
+          updatePetListeningVisual();
+        releaseTimer = 1.0;
         stableMusicSeconds = 0;
       }
     } else {
-      if(score >= 0.25){
-        releaseTimer = 1.15;
+      // Once playing is established, brief gaps between notes won't make the
+      // smile/status flicker on and off.
+      if(score >= 0.8){
+        releaseTimer = 1.0;
       } else {
         releaseTimer -= dt;
       }
-      if((musicalConfidence < 0.28) && releaseTimer <= 0){
+      if(musicalConfidence < 0.20 && releaseTimer <= 0){
         musicActive = false;
+          updatePetListeningVisual();
         stableMusicSeconds = 0;
       }
     }
@@ -459,7 +840,7 @@
     const sayings=[
       "I can hear your music! 😊",
       "Beautiful playing — keep going!",
-      "Clap clap! I’m cheering you on!",
+      "I’m listening — keep going!",
       "That was lovely 🎵",
       "You’re powering up my next evolution!"
     ];
@@ -472,21 +853,44 @@
     lastTick=ts;
 
     const f=spectralFeatures();
-    const score=classify(f);
+    let score=classify(f);
+
+    // The built-in metronome is intentionally not allowed to help trigger
+    // "music detected", even if the phone speaker is picked up by the mic.
+    if(state.metronomeOn && (performance.now() - lastMetroBeatAt) < 140){
+      score = 0;
+    }
+
+    if(score>=0.8){
+      lastConvincingMusicAt=performance.now();
+    }
+
     updateDetection(score, dt);
 
     $("signalBar").style.width=Math.min(100,f.rms*850)+"%";
+
+    // The smile may remain on briefly to avoid flicker, but time only counts
+    // while convincing music has been heard in the last 0.85 seconds.
+    const countableMusic =
+      musicActive && (performance.now()-lastConvincingMusicAt)<850;
 
     if(musicActive){
       setPetMusicState(true);
       $("listenState").textContent="Music detected ✓";
       $("listenState").className="music-ok";
-      $("musicReason").textContent = stableMusicSeconds < 1.3
-        ? "Nice — the sound is staying musical, so practice time is counting."
-        : `Counting practice • stable music detected around ${Math.round(f.pitch||0)} Hz`;
+      $("musicReason").textContent = countableMusic
+        ? (stableMusicSeconds < 1.3
+            ? "Nice — convincing music detected, so practice time is counting."
+            : `Counting practice • stable music detected around ${Math.round(f.pitch||0)} Hz`)
+        : "Pause detected — practice time is stopped until you play again.";
 
-      earnedBuffer += dt;
-      if(earnedBuffer >= 0.5){
+      if(countableMusic){
+        earnedBuffer += dt;
+      }else{
+        earnedBuffer = 0;
+      }
+
+      if(countableMusic && earnedBuffer >= 0.5){
         const add=earnedBuffer; earnedBuffer=0;
         const before=state.today;
         state.today += add;
@@ -537,6 +941,7 @@
       time = new Uint8Array(analyser.fftSize);
 
       active=true;
+      lastConvincingMusicAt=-Infinity;
       musicalConfidence=0;
       musicActive=false;
       releaseTimer=0;
@@ -574,6 +979,7 @@
     stream=null; ctx=null;
 
     musicActive=false;
+    lastConvincingMusicAt=-Infinity;
     setPetMusicState(false);
 
     $("startBtn").disabled=false;
@@ -591,6 +997,8 @@
   window.addEventListener("pagehide",save);
   setInterval(()=>{if(active)save()},5000);
 
+  ensurePetTraits();
+  recoverMissedMilestones();
   render();
 })();
 </script>
