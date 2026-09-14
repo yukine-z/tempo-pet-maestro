@@ -165,7 +165,7 @@ details.info-box[open] summary{margin-bottom:10px}
 <main>
   <section class="card">
     <h1>My Mystery Music Pet</h1>
-    <p class="sub">Play your piano to uncover your mystery pet! The more you practise, the more of your pet you get to see.</p>
+    <p class="sub">Play your piano to uncover your mystery pet! There are now lots more secret pets to discover, and the more you practise, the more of your pet you get to see.</p>
 
     <div class="hero">
       <div>
@@ -237,10 +237,23 @@ details.info-box[open] summary{margin-bottom:10px}
       </div>
     </div>
   </section>
+
+  <section class="card">
+    <details class="info-box">
+      <summary>Art credits for grown-ups</summary>
+      <ul class="info-list">
+        <li>Some built-in mystery pets are loaded from <strong>VS Code Pets</strong> by Tony Baloney and contributors.</li>
+        <li>Additional built-in mystery pets are loaded from <strong>codex-pets</strong> by <strong>senyo888</strong> and <strong>codex-pet-collection</strong> by <strong>shuoyang129</strong>.</li>
+        <li>The Codex pet artwork used here is credited under <strong>CC BY 4.0</strong>.</li>
+      </ul>
+    </details>
+  </section>
+
 </main>
 
 <script>
 const DEFAULT_PETS = [
+  // VS Code Pets
   {name:"Chicken", url:"https://raw.githubusercontent.com/tonybaloney/vscode-pets/main/media/chicken/icon.png"},
   {name:"Cockatiel", url:"https://raw.githubusercontent.com/tonybaloney/vscode-pets/main/media/cockatiel/icon.png"},
   {name:"Crab", url:"https://raw.githubusercontent.com/tonybaloney/vscode-pets/main/media/crab/icon.png"},
@@ -252,9 +265,24 @@ const DEFAULT_PETS = [
   {name:"Raccoon", url:"https://raw.githubusercontent.com/tonybaloney/vscode-pets/main/media/raccoon/icon.png"},
   {name:"Rat", url:"https://raw.githubusercontent.com/tonybaloney/vscode-pets/main/media/rat/icon.png"},
   {name:"Snake", url:"https://raw.githubusercontent.com/tonybaloney/vscode-pets/main/media/snake/icon.png"},
-  {name:"Turtle", url:"https://raw.githubusercontent.com/tonybaloney/vscode-pets/main/media/turtle/icon.png"}
+  {name:"Turtle", url:"https://raw.githubusercontent.com/tonybaloney/vscode-pets/main/media/turtle/icon.png"},
+
+  // Codex Pets by senyo888 (CC BY 4.0)
+  {name:"Bella", url:"https://raw.githubusercontent.com/senyo888/codex-pets/main/pets/bella/preview.gif"},
+  {name:"AetherWing", url:"https://raw.githubusercontent.com/senyo888/codex-pets/main/pets/aetherwing/preview.gif"},
+  {name:"AetherCore", url:"https://raw.githubusercontent.com/senyo888/codex-pets/main/pets/aethercore/preview.gif"},
+  {name:"AetherMite", url:"https://raw.githubusercontent.com/senyo888/codex-pets/main/pets/aethermite/preview.gif"},
+  {name:"Aetherbite", url:"https://raw.githubusercontent.com/senyo888/codex-pets/main/pets/aetherbite/preview.gif"},
+  {name:"Calian", url:"https://raw.githubusercontent.com/senyo888/codex-pets/main/pets/calian/preview.gif"},
+  {name:"Scarlet", url:"https://raw.githubusercontent.com/senyo888/codex-pets/main/pets/scarlet/preview.gif"},
+
+  // Codex Pet Collection by shuoyang129 (CC BY 4.0)
+  {name:"Jadebyte", url:"https://raw.githubusercontent.com/shuoyang129/codex-pet-collection/main/assets/jadebyte-preview.png"},
+  {name:"Lunari", url:"https://raw.githubusercontent.com/shuoyang129/codex-pet-collection/main/assets/lunari-preview.png"},
+  {name:"Kiro", url:"https://raw.githubusercontent.com/shuoyang129/codex-pet-collection/main/assets/kiro-preview.png"}
 ];
 
+const BUILT_IN_PET_COUNT = DEFAULT_PETS.length;
 const KEY = "tempoPetRevealV1";
 const CUSTOM_KEY = "tempoPetCustomPetsV1";
 const todayKey = () => {
