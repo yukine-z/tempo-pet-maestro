@@ -263,7 +263,7 @@
       <div id="bubble" class="bubble">Ready when you are 🎹</div>
       <div class="pet-wrap">
         <div class="pet-art-wrap">
-          <img id="petArt" class="pet-art" src="pets/pet_01.jpg" alt="Tempo Pet evolution stage 1">
+          <img id="petArt" class="pet-art" src="pet_01.jpg" alt="Tempo Pet evolution stage 1">
           <div id="stageChip" class="stage-chip">Stage 1 of 10</div>
         </div>
 
@@ -538,7 +538,7 @@
     const stage=Math.max(1,Math.min(10,(Number(state.evolutions)||0)+1));
     const art=$("petArt");
     if(art){
-      art.src=`pets/pet_${String(stage).padStart(2,"0")}.jpg`;
+      art.src=`pet_${String(stage).padStart(2,"0")}.jpg`;
       art.alt=`Tempo Pet evolution stage ${stage}`;
     }
     const chip=$("stageChip");
