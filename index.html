@@ -206,6 +206,7 @@ details.info-box[open] summary{margin-bottom:10px}
         <div class="small">Your practice today</div>
         <div id="timer" class="timer">00:00 / 30:00</div>
         <div class="progress"><div id="progressBar"></div></div>
+        <div id="revealStatus" class="center small" style="margin-top:6px">Pet reveal: 20%</div>
         <div class="reveal-steps" aria-label="Mystery pet reveal milestones">
           <span><b>Start</b><small>20%</small></span>
           <span><b>10 min</b><small>40%</small></span>
@@ -213,7 +214,7 @@ details.info-box[open] summary{margin-bottom:10px}
           <span><b>30 min</b><small>100% 🎉</small></span>
         </div>
         <p id="bubble" class="center small" style="margin-top:10px">Play a few notes and I’ll start listening 🎵</p>
-        <div class="kid-tip">🌟 Tip: little breaks are okay — your timer gives you a few seconds to breathe between songs.</div>
+        <div class="kid-tip">🌟 Tip: little breaks are okay — the timer waits while you turn a page or get ready for the next song.</div>
 
         <div class="row">
           <button id="startBtn">Start listening 🎤</button>
@@ -229,7 +230,7 @@ details.info-box[open] summary{margin-bottom:10px}
             <li>It listens for musical notes, not just loud noises.</li>
             <li>It checks whether the sound has the shape of music instead of a hiss or random noise.</li>
             <li>It waits until it is sure you are really playing before the timer starts.</li>
-            <li>If you stop for a moment, you get about 5 seconds to turn a page, think, or move to your next song.</li>
+            <li>If you stop for a moment, the timer waits. You get about 5 seconds to turn a page, think, or move to your next song without restarting the listener.</li>
             <li>The app knows its own metronome clicks, so they do not earn practice time by themselves.</li>
             <li>Your sound stays on your device. It is not recorded or sent anywhere.</li>
           </ul>
@@ -361,6 +362,15 @@ if(state.day !== todayKey()){
   save();
 }
 
+/* Keep reveal progress in sync with practice progress from older app versions. */
+if(!state.completedPet && Number.isFinite(state.today)){
+  state.currentPetSeconds = Math.max(
+    Number(state.currentPetSeconds) || 0,
+    Math.min(1800, Number(state.today) || 0)
+  );
+  save();
+}
+
 // First run / recovery: make sure a secret mystery pet is chosen and stored.
 if(
   !Number.isInteger(state.currentPetIndex) ||
@@ -462,29 +472,37 @@ function updateRevealOrder(){
   revealOrder = makeRevealOrder(`${p.name}::${state.currentPetIndex}`, occupied);
 }
 function drawMask(){
-  const ratio = Math.min(1, state.currentPetSeconds / 1800);
+  const seconds = Math.max(0, Math.min(1800, Number(state.currentPetSeconds) || 0));
 
-  // Reveal profile:
-  // start = 20%, 10 min = 40%, 20 min = 70%, 30 min = 100%
-  let visible = 0.20;
-  if(ratio <= (10/30)){
-    const local = ratio / (10/30);
-    visible = 0.20 + local * 0.20;   // 20% -> 40%
-  }else if(ratio <= (20/30)){
-    const local = (ratio - 10/30) / (10/30);
-    visible = 0.40 + local * 0.30;   // 40% -> 70%
+  // Exact reveal checkpoints:
+  // 0 min = 20%, 10 min = 40%, 20 min = 70%, 30 min = 100%.
+  let visible;
+  if(seconds <= 600){
+    visible = 0.20 + (seconds / 600) * 0.20;
+  }else if(seconds <= 1200){
+    visible = 0.40 + ((seconds - 600) / 600) * 0.30;
   }else{
-    const local = (ratio - 20/30) / (10/30);
-    visible = 0.70 + local * 0.30;   // 70% -> 100%
+    visible = 0.70 + ((seconds - 1200) / 600) * 0.30;
   }
 
+  // Hard floors at the milestones, so the reveal can never lag behind.
+  if(seconds >= 600) visible = Math.max(visible, 0.40);
+  if(seconds >= 1200) visible = Math.max(visible, 0.70);
+  if(seconds >= 1800) visible = 1;
+
   visible = Math.max(0.20, Math.min(1, visible));
-  const hiddenRight = Math.max(0, (1-visible) * 100);
+  const hiddenRight = (1-visible) * 100;
   petImg.style.clipPath = `inset(0 ${hiddenRight}% 0 0)`;
 }
 function render(){
   $("timer").textContent = `${fmt(state.today)} / 30:00`;
   $("progressBar").style.width = `${Math.min(100, state.today/1800*100)}%`;
+  const ps = Math.max(0, Math.min(1800, Number(state.currentPetSeconds)||0));
+  let revealPct;
+  if(ps <= 600) revealPct = 20 + (ps/600)*20;
+  else if(ps <= 1200) revealPct = 40 + ((ps-600)/600)*30;
+  else revealPct = 70 + ((ps-1200)/600)*30;
+  if($("revealStatus")) $("revealStatus").textContent = `Pet reveal: ${Math.round(Math.min(100,revealPct))}%`;
 
   const pet = currentPet();
   $("petName").textContent = state.completedPet ? `You found: ${pet.name}` : "Who could it be? 👀";
@@ -564,7 +582,7 @@ function classify(){
   analyser.getByteFrequencyData(freq);
   analyser.getByteTimeDomainData(timeData);
   const level=rms(timeData);
-  if(level<0.012) return 0;
+  if(level<0.015) return 0;
   const st=spectralStats(freq,ctx.sampleRate,analyser.fftSize);
   const ac=autocorrPitch(timeData,ctx.sampleRate);
   const pitchOK=ac.pitch>=50 && ac.pitch<=1600;
@@ -634,7 +652,12 @@ function audioLoop(now){
   if(score>=.8) lastConvincingMusicAt=now;
 
   const sinceMusic = now-lastConvincingMusicAt;
-  const countable = musicActive && sinceMusic<5000;
+
+  // Practice time only earns while convincing music is still very recent.
+  // A separate 5-second grace keeps the listening session alive for page turns
+  // or moving to the next piece, but those silent seconds are NOT added.
+  const countable = musicActive && sinceMusic<1200;
+  const breathing = musicActive && sinceMusic>=1200 && sinceMusic<5000;
 
   if(musicActive && sinceMusic>=5000){
     musicActive=false;
@@ -646,18 +669,21 @@ function audioLoop(now){
 
   let detectorState = "waiting";
   if(score>=.8 || countable) detectorState = "music";
-  else if(running && currentRms >= 0.012) detectorState = "checking";
+  else if(breathing) detectorState = "breathing";
+  else if(running && currentRms >= 0.015) detectorState = "checking";
 
   if(detectorState !== lastDetectorState){
     lastDetectorState = detectorState;
     const el = $("detectorStatus");
     if(el){
-      el.className = "detector-status" + (detectorState==="music" ? " good" : detectorState==="checking" ? " checking" : "");
+      el.className = "detector-status" + (detectorState==="music" ? " good" : detectorState==="checking" || detectorState==="breathing" ? " checking" : "");
       el.textContent = detectorState==="music"
-        ? (sinceMusic > 900 ? "Little pause — that’s okay! ⏳" : "I hear your music! 🎵 Your practice time is counting.")
-        : detectorState==="checking"
-          ? "I can hear something… is it music? 👂"
-          : "Waiting for some clear piano notes 🎹";
+        ? "I hear your music! 🎵 Your practice time is counting."
+        : detectorState==="breathing"
+          ? "Little pause — take your time. The timer is waiting ⏳"
+          : detectorState==="checking"
+            ? "I can hear something… is it music? 👂"
+            : "Waiting for some clear piano notes 🎹";
     }
   }
 
